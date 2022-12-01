@@ -1,0 +1,21 @@
+
+/*
+Tutorials/examples:
+
+Creating composites: https://composedb.js.org/docs/0.3.x/guides/creating-composites/schema
+https://forum.ceramic.network/t/webpack-notes-example-and-graphql-good-practices/254
+https://forum.ceramic.network/t/queries-by-fields/260
+*/
+
+
+// Nouns and LilNouns proposals schema similar to format 
+type Profile @createModel(accountRelation: SINGLE, description: "Very basic profile") {
+  displayName: String! @string(minLength: 3, maxLength: 50)
+}
+
+type Note @createModel(accountRelation: LIST, description: "Very basic note") {
+  author: DID! @documentAccount
+  version: CommitID! @documentVersion
+  title: String! @string(minLength: 10, maxLength: 100)
+  text: String @string(maxLength: 2000)
+}
