@@ -6,6 +6,15 @@ Creating composites: https://composedb.js.org/docs/0.3.x/guides/creating-composi
 https://forum.ceramic.network/t/webpack-notes-example-and-graphql-good-practices/254
 https://forum.ceramic.network/t/queries-by-fields/260
 
+First Composite: https://composedb.js.org/docs/0.3.x/first-composite
+
+Deploy model: https://composedb.js.org/docs/0.3.x/guides/using-composites/deployment
+# Requires Admin DID
+composedb composite:deploy my-first-composite.json --ceramic-url=http://localhost:7007
+
+
+Deploy model from CLI: https://developers.ceramic.network/tools/glaze/deploy-from-cli/#creating-data-models
+
 
 Exanple postgres entry nouns_proposals
 "proposal_id"	"created_timestamp"	"proposer"	"requested_eth"	"start_block"	"end_block"	"state"	"total_votes"	"total_distinct_voters"	"quorum_required"	"votes_for"	"distinct_voters_for"	"votes_against"	"distinct_voters_against"	"votes_abstain"	"distinct_votes_abstain"	"unique_holders"	"total_supply"	"description"	"transactionhash"	"ens"	"blocknumber"
@@ -20,6 +29,23 @@ I agree that we shouldnt resort to becoming a complacent vehicle of passive phil
 With donations we need to be extra wary of conflicts of interest or self-dealing. Unfortunately there is no way to prove this cryptographically, but I attest that I have no prior (or planned future) relationship with ZachXBT and that today was the first time I contacted them (via twitter) to ask for their permission to make this proposal. "	"0x9f019b3102433bf7a1fd6b377c032c356301ec4c01685f4352f9fc613dc4ba11"	"noun40.eth"	16085764
 
 */
+
+
+//Ceramic Model
+
+{
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "title": "Reward",
+   "type": "object",
+   "properties": {
+     "title": {"type": "string"},
+     "message": {"type": "string"}
+   },
+   "required": [
+     "message",
+     "title"
+   ]
+ }
 
 
 // Nouns and LilNouns proposals schema similar to format 
