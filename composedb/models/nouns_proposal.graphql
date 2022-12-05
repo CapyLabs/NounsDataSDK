@@ -1,11 +1,11 @@
-# https://composedb.js.org/docs/0.3.x/guides/creating-composites/schema
-# Using PostgresDb nouns_proposal schema
 
-# This is the composite schema definition. It can be converted to a composite:
+# This file is the composite schema definition. 
+
+# To convert it to a composite:
 # composedb composite:create source-schema.graphql --output=my-composite.json
 # https://composedb.js.org/docs/0.3.x/guides/creating-composites/overview#converting-a-schema-to-a-composite
 
-# The composite can then be uploade to a Ceramic node:
+# The composite can then be uploaded to a Ceramic node:
 # composedb composite:deploy my-first-composite.json --ceramic-url=http://localhost:7007
 
 # To start GraphQL server, convert the encoded composite to a runtime definition:
