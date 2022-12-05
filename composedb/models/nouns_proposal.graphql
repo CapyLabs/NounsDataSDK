@@ -1,0 +1,39 @@
+# https://composedb.js.org/docs/0.3.x/guides/creating-composites/schema
+# Using PostgresDb nouns_proposal schema
+
+# This is the composite schema definition. It can be converted to a composite:
+# composedb composite:create source-schema.graphql --output=my-composite.json
+# https://composedb.js.org/docs/0.3.x/guides/creating-composites/overview#converting-a-schema-to-a-composite
+
+# The composite can then be uploade to a Ceramic node:
+# composedb composite:deploy my-first-composite.json --ceramic-url=http://localhost:7007
+
+# To start GraphQL server, convert the encoded composite to a runtime definition:
+# composedb composite:compile my-first-composite.json runtime-composite.json
+# composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql --port=5001 runtime-composite.json
+# https://composedb.js.org/docs/0.3.x/first-composite
+
+type NounsProposal @createModel(accountRelation: LIST, description: "Table containing information about proposals made in a voting system") {
+  blocknumber: Int @integer
+  created_timestamp: Timestamp @timestamp
+  votes_abstain: BigInt @bigint
+  distinct_votes_abstain: BigInt @bigint
+  unique_holders: BigInt @bigint
+  total_supply: Numeric @numeric
+  proposal_id: Int @integer
+  requested_eth: Numeric @numeric
+  start_block: Int @integer
+  end_block: Int @integer
+  total_votes: BigInt @bigint
+  total_distinct_voters: BigInt @bigint
+  quorum_required: Int @integer
+  votes_for: BigInt @bigint
+  distinct_voters_for: BigInt @bigint
+  votes_against: BigInt @bigint
+  distinct_voters_against: BigInt @bigint
+  proposer: String @string
+  transactionhash: String @string
+  ens: String @string
+  description: String @string
+  state: String @string
+}
