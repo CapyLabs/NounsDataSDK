@@ -1,0 +1,12 @@
+
+# Check what is supported by the bindings (not orderby).
+# Consult content drip with scalars & GraphQl
+
+query {
+  nouns_proposal(orderBy: created_timestamp, orderDirection: desc, first: 1) {
+    proposal_id
+    proposer
+    description
+    created_timestamp
+  }
+}

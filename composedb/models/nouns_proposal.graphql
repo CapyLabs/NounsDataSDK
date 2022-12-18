@@ -10,8 +10,15 @@
 
 # To start GraphQL server, convert the encoded composite to a runtime definition:
 # composedb composite:compile my-first-composite.json runtime-composite.json
+# composedb graphql:schema runtime-composite.json # Print the runtime-composite 
 # composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql --port=5001 runtime-composite.json
 # https://composedb.js.org/docs/0.3.x/first-composite
+
+
+# No Timestamp, bigInt. Check the available scalars
+# for the right names
+
+
 
 type NounsProposal @createModel(accountRelation: LIST, description: "Table containing information about proposals made in a voting system") {
   blocknumber: Int @integer

@@ -1,0 +1,13 @@
+mutation {
+  createNounsProposal(
+    proposal_id: 123,
+    proposer: "0xabcdef123456",
+    description: "Proposal to increase the total supply of tokens",
+    created_timestamp: "2022-12-05T12:00:00Z"
+  ) {
+    proposal_id
+    proposer
+    description
+    created_timestamp
+  }
+}
