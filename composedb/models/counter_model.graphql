@@ -17,6 +17,6 @@
 
 
 
-type Counter @createModel(accountRelation: LIST, description: "Counter") {
-  count: Int
+type Counter @createModel(accountRelation: SINGLE, description: "Counter") {
+  count: Int! @int(min: 1)
 }

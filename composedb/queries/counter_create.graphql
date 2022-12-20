@@ -1,0 +1,7 @@
+mutation {
+  Counter(
+    count: 123
+  ) {
+    count
+  }
+}

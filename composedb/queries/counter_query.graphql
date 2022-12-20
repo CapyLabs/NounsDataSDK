@@ -1,0 +1,9 @@
+
+# Check what is supported by the bindings (not orderby).
+# Consult content drip with scalars & GraphQl
+
+query {
+  Counter() {
+    count
+  }
+}
