@@ -15,32 +15,8 @@
 # https://composedb.js.org/docs/0.3.x/first-composite
 
 
-# No Timestamp, bigInt. Check the available scalars
-# for the right names
 
 
-type NounsProposal @createModel(accountRelation: LIST, description: "Table containing 
-information about proposals made in a voting system") {
-  blocknumber: Int
-  created_timestamp: Int
-  votes_abstain: Int
-  distinct_votes_abstain: Int
-  unique_holders: Int
-  total_supply: Int
-  proposal_id: Int
-  requested_eth: Int
-  start_block: Int
-  end_block: Int
-  total_votes: Int
-  total_distinct_voters: Int
-  quorum_required: Int
-  votes_for: Int
-  distinct_voters_for: Int
-  votes_against: Int
-  distinct_voters_against: Int
-  proposer: String @string(maxLength:256)
-  transactionhash: String @string(maxLength:256)
-  ens: String @string(maxLength:256)
-  description: String @string(maxLength:256)
-  state: String @string(maxLength:256)
+type Counter @createModel(accountRelation: SINGLE, description: "Counter") {
+  count: Int! @int(min: 1)
 }
