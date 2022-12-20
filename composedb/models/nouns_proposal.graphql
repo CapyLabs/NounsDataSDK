@@ -19,8 +19,8 @@
 # for the right names
 
 
-
-type NounsProposal @createModel(accountRelation: LIST, description: "Table containing information about proposals made in a voting system") {
+type NounsProposal @createModel(accountRelation: LIST, description: "Table containing 
+information about proposals made in a voting system") {
   blocknumber: Int
   created_timestamp: Int
   votes_abstain: Int
@@ -36,11 +36,11 @@ type NounsProposal @createModel(accountRelation: LIST, description: "Table conta
   quorum_required: Int
   votes_for: Int
   distinct_voters_for: Int
-  votes_against: Int 
+  votes_against: Int
   distinct_voters_against: Int
-  proposer: String
-  transactionhash: String
-  ens: String
-  description: String
-  state: String
+  proposer: String @string(maxLength:256)
+  transactionhash: String @string(maxLength:256)
+  ens: String @string(maxLength:256)
+  description: String @string(maxLength:256)
+  state: String @string(maxLength:256)
 }
