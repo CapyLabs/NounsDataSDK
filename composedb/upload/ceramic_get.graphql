@@ -1,0 +1,2 @@
+{"query":"query { counterIndex(first:10){edges { node { c
+ount } }} }"}
