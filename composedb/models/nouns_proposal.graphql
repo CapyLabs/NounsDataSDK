@@ -21,26 +21,28 @@
 
 type NounsProposal @createModel(accountRelation: LIST, description: "Table containing 
 information about proposals made in a voting system") {
-  blocknumber: Int
-  created_timestamp: Int
-  votes_abstain: Int
-  distinct_votes_abstain: Int
-  unique_holders: Int
-  total_supply: Int
-  proposal_id: Int
-  requested_eth: Int
-  start_block: Int
-  end_block: Int
-  total_votes: Int
-  total_distinct_voters: Int
-  quorum_required: Int
-  votes_for: Int
-  distinct_voters_for: Int
-  votes_against: Int
-  distinct_voters_against: Int
-  proposer: String @string(maxLength:256)
-  transactionhash: String @string(maxLength:256)
-  ens: String @string(maxLength:256)
-  description: String @string(maxLength:256)
-  state: String @string(maxLength:256)
+  blocknumber: Int! @int(min: 1)
+  created_timestamp: Int! @int(min: 1)
+  votes_abstain: Int! @int(min: 1)
+  distinct_votes_abstain: Int! @int(min: 1)
+  unique_holders: Int! @int(min: 1)
+  total_supply: Int! @int(min: 1)
+  proposal_id: Int! @int(min: 1)
+  requested_eth: Int! @int(min: 1)
+  start_block: Int! @int(min: 1)
+  end_block: Int! @int(min: 1)
+  total_votes: Int! @int(min: 1)
+  total_distinct_voters: Int! @int(min: 1)
+  quorum_required: Int! @int(min: 1)
+  votes_for: Int! @int(min: 1)
+  distinct_voters_for: Int! @int(min: 1)
+  votes_against: Int! @int(min: 1)
+  distinct_voters_against: Int! @int(min: 1)
+  proposer: String! @string(maxLength:256)
+  transactionhash: String! @string(maxLength:256)
+  ens: String! @string(maxLength:256)
+  description: String! @string(maxLength:256)
+  state: String! @string(maxLength:256)
 }
+
+

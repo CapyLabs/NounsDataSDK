@@ -1,6 +1,3 @@
-# This is a python file using psycopg2.
-# It has a function to read a file nouns_proposals.sql
-# and reads out the query output row by row.
 
 #  pip3 install psycopg2-binary
 import psycopg2
