@@ -3,6 +3,7 @@
 import psycopg2
 import configparser
 import requests
+import json
 
 def call_graphql_service(ceramic_endpoint):
 
@@ -13,12 +14,15 @@ def call_graphql_service(ceramic_endpoint):
     with open("ceramic_get.graphql", "r") as f:
         query = f.read()
 
-    payload = {
-        "query": query
-    }
-
+    #payload = {
+    #    "query": query
+    #}
+    payload = json.loads(query)
+    print(str(payload))
     response = requests.post(ceramic_endpoint, json=payload, headers=headers)
+    response.raise_for_status()
     if response.status_code != 200:
+        print(str(response))
         raise Exception("Failed to execute query")
 
     data = response.json()
