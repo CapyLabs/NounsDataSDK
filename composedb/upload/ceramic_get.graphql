@@ -1,1 +1,1 @@
-{"query":"query { counterIndex(first:10){edges { node { count } }} }"}
+{"query":"query { nounsProposalIndex(first:10){edges { node { id } }} }"}

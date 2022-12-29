@@ -5,13 +5,17 @@ import configparser
 import requests
 import json
 
+# 1. Get the ComposeDb proposals that are not Executed/Canceled
+# 2. Get the postgres table nouns_proposals rows for those proposal_ids
+# 3. Write to ComposeDb, updating those proposals, with new values 
+
 def call_graphql_service(ceramic_endpoint):
 
     headers = {
         "Content-Type": "application/json"
     }
 
-    with open("ceramic_get.graphql", "r") as f:
+    with open("ceramic_publish.graphql", "r") as f:
         query = f.read()
 
     #payload = {
