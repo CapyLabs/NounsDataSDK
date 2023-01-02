@@ -10,7 +10,7 @@
 # $ composedb graphql:schema generated/nouns_proposal_runtime_composite.json
 #
 # Start GraphiQL server:
-# $ composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql --port=5001 runtime-composite.json
+# $ composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql --port=5001 generated/nouns_proposal_runtime_composite.json --did-private-key=$private_key
 # https://composedb.js.org/docs/0.3.x/first-composite
 
 type NounsProposal @createModel(accountRelation: LIST, description: "On-chain proposals and their voting stats") {
