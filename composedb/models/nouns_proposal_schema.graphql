@@ -1,0 +1,39 @@
+# The Nouns Proposal composite schema definition. 
+# Deployed on Clay Testnet as kjzl6hvfrbw6c8sde0sbybhp8z3s500ru1c4ifawovkqxet5h77gjyybu1567uj
+# 
+# Convert schema to composite and deploy:
+# $ composedb composite:create nouns_proposal_schema.graphql --output=generated/nouns_proposal_composite.json -k=$private_key -c=http://localhost:7007
+# $ composedb composite:deploy generated/nouns_proposal_composite.json -k=$private_key -c=http://localhost:7007
+# 
+# [Optional] Compile composite and check the schema:
+# $ composedb composite:compile generated/nouns_proposal_composite.json generated/nouns_proposal_runtime_composite.json
+# $ composedb graphql:schema generated/nouns_proposal_runtime_composite.json
+#
+# Start GraphiQL server:
+# $ composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql --port=5001 generated/nouns_proposal_runtime_composite.json --did-private-key=$private_key
+# https://composedb.js.org/docs/0.3.x/first-composite
+
+type NounsProposal @createModel(accountRelation: LIST, description: "On-chain proposals and their voting stats") {
+  blocknumber: Int! @int(min: 0)
+  created_timestamp: Int! @int(min: 0)
+  unique_holders: Int! @int(min: 0)
+  total_supply: Int! @int(min: 0)
+  proposal_id: Int! @int(min: 1)
+  requested_eth: Int @int(min: 0)
+  start_block: Int! @int(min: 0)
+  end_block: Int! @int(min: 0)
+  total_votes: Int! @int(min: 0)
+  total_distinct_voters: Int! @int(min: 0)
+  quorum_required: Int! @int(min: 0)
+  votes_for: Int! @int(min: 0)
+  distinct_voters_for: Int! @int(min: 0)
+  votes_against: Int! @int(min: 0)
+  distinct_voters_against: Int! @int(min: 0)
+  votes_abstain: Int! @int(min: 0)
+  distinct_votes_abstain: Int! @int(min: 0)
+  proposer: String! @string(maxLength:256) # TODO: Use relation views https://composedb.js.org/docs/0.3.x/guides/creating-composites/directives#relation-views
+  ens: String @string(maxLength:256)
+  transactionhash: String! @string(maxLength:256)
+  description: String! @string(maxLength:4096)
+  state: String! @string(maxLength:256)
+}

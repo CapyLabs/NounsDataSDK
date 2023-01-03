@@ -10,6 +10,66 @@ import json
 # 3. Write to ComposeDb, updating those proposals, with new values 
 
 
+<<<<<<< HEAD
+=======
+CERAMIC_PUBLISH_JSON = {
+    "query": """mutation CreateNounsProposal($proposal: CreateNounsProposalInput!) {
+          createNounsProposal(input: $proposal) {
+            document {
+              blocknumber
+              created_timestamp
+              unique_holders
+              total_supply
+              proposal_id
+              requested_eth
+              start_block
+              end_block
+              total_votes
+              total_distinct_voters
+              quorum_required
+              votes_for
+              distinct_voters_for
+              votes_against
+              distinct_voters_against
+              votes_abstain
+              distinct_votes_abstain
+              proposer
+              transactionhash
+              description
+              state
+            }
+        }
+    }""",
+    "variables": {
+         "proposal": {
+            "content": {
+              "blocknumber": 1,
+              "created_timestamp": 1672282957,
+              "unique_holders": 1,
+              "total_supply": 1,
+              "proposal_id": 1,
+              "requested_eth": 0,
+              "start_block": 1,
+              "end_block": 2,
+              "total_votes": 1,
+              "total_distinct_voters": 1,
+              "quorum_required": 1,
+              "votes_for": 1,
+              "distinct_voters_for": 1,
+              "votes_against": 0,
+              "distinct_voters_against": 0,
+              "votes_abstain": 0,
+              "distinct_votes_abstain": 0,
+              "proposer": "0xabcdef123456",
+              "transactionhash": "0x987654321",
+              "description": "Proposal to increase the total supply of tokens",
+              "state": "OPEN"
+            }
+          }
+    }
+}
+
+>>>>>>> d6c4cda7a315893474dad4571bee23524ec2a78d
 def call_graphql_service(ceramic_endpoint):
 
     headers = {
@@ -22,7 +82,9 @@ def call_graphql_service(ceramic_endpoint):
     #payload = {
     #    "query": query
     #}
-    payload = json.loads(query)
+    #payload = json.loads(query)
+    payload = CERAMIC_PUBLISH_JSON #json.loads(CERAMIC_PUBLISH_JSON)
+
     print(str(payload))
     response = requests.post(ceramic_endpoint, json=payload, headers=headers)
     response.raise_for_status()
@@ -30,7 +92,9 @@ def call_graphql_service(ceramic_endpoint):
         print(str(response))
         raise Exception("Failed to execute query")
 
+    print('\n\n\n')
     data = response.json()
+    print(str(data))
 
     for key, value in data.items():
         print(key, ":", value)
