@@ -1,0 +1,1 @@
+{"query":"mutation { createCounter(input: { content: {count: 3}}){ document {count} }  }"}
