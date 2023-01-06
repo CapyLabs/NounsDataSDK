@@ -12,25 +12,6 @@ CERAMIC_GET_JSON = {
 
 
 
-CERAMIC_GET_ONE_JSON = {
-	"query": """mutation UpdateNounsProposal($proposal: UpdateNounsProposalInput!) {
-			updateNounsProposal(input: $proposal) {
-			  document{ 
-			    total_votes
-			  }
-			}
-		}""",
-	"variables": {
-		"proposal": {
-			"id": "",
-			"content": {
-			  "total_votes": 2
-			}
-		}
-	}
-}
-
-
 CERAMIC_UPDATE_JSON = {
 	"query": """mutation UpdateNounsProposal($proposal: UpdateNounsProposalInput!) {
 			updateNounsProposal(input: $proposal) {
