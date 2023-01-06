@@ -44,6 +44,30 @@ def call_graphql_service(ceramic_endpoint):
         print(key, ":", value)
 
 
+def call_thegraph():
+  headers = {
+      "Content-Type": "application/json"
+  }
+  payload = {"query": """{
+    proposals(orderBy: createdTimestamp, orderDirection: desc) {
+      id
+      description
+      status
+      createdTimestamp
+      abstainVotes
+      againstVotes
+      executionETA
+      forVotes
+      proposalThreshold
+      targets
+      values
+    }
+  }"""}
+  url_lilnouns_thegraph = "https://api.thegraph.com/subgraphs/name/lilnounsdao/lil-nouns-subgraph"
+  response = requests.post(url_lilnouns_thegraph, json=payload, headers=headers)
+  print(str(response.json()))
+
+
 def read_nouns_proposals(conn):
     cursor = conn.cursor()
 
@@ -77,10 +101,12 @@ def main():
 
     conn = None
     try:
-        call_graphql_service(ceramic_endpoint)
+        # call_graphql_service(ceramic_endpoint)
 
-        conn = psycopg2.connect(database=db_name, user=db_user, password=db_password, host=db_host, port=db_port)
-        read_nouns_proposals(conn)
+        #conn = psycopg2.connect(database=db_name, user=db_user, password=db_password, host=db_host, port=db_port)
+        # read_nouns_proposals(conn)
+
+        call_thegraph()
         
         conn.close()
     except (Exception, psycopg2.DatabaseError) as error:
