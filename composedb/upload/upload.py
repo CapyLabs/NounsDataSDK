@@ -9,9 +9,8 @@ import json
 # 2. Get the postgres table nouns_proposals rows for those proposal_ids
 # 3. Write to ComposeDb, updating those proposals, with new values 
 
+# Use The Graph API for this
 
-<<<<<<< HEAD
-=======
 CERAMIC_PUBLISH_JSON = {
     "query": """mutation CreateNounsProposal($proposal: CreateNounsProposalInput!) {
           createNounsProposal(input: $proposal) {
@@ -69,7 +68,6 @@ CERAMIC_PUBLISH_JSON = {
     }
 }
 
->>>>>>> d6c4cda7a315893474dad4571bee23524ec2a78d
 def call_graphql_service(ceramic_endpoint):
 
     headers = {
