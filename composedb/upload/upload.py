@@ -12,6 +12,7 @@ import json
 # Use The Graph API for this
 from queries import CERAMIC_PUBLISH_JSON
 from queries import CERAMIC_GET_JSON
+from queries import CERAMIC_UPDATE_JSON
 
 def call_graphql_service(ceramic_endpoint):
 
@@ -26,7 +27,7 @@ def call_graphql_service(ceramic_endpoint):
     #    "query": query
     #}
     #payload = json.loads(query)
-    payload = CERAMIC_GET_JSON #json.loads(CERAMIC_PUBLISH_JSON)
+    payload = CERAMIC_UPDATE_JSON #json.loads(CERAMIC_PUBLISH_JSON)
 
     print(str(payload))
     response = requests.post(ceramic_endpoint, json=payload, headers=headers)

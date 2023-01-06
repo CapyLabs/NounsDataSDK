@@ -8,14 +8,45 @@ CERAMIC_GET_JSON = {
 
 # TODO: This needs variables and be a template
 # https://dgraph.io/docs/graphql/mutations/update/#set
+# https://composedb.js.org/docs/preview/interact-with-data
+
+
+
+CERAMIC_GET_ONE_JSON = {
+	"query": """mutation UpdateNounsProposal($proposal: UpdateNounsProposalInput!) {
+			updateNounsProposal(input: $proposal) {
+			  document{ 
+			    total_votes
+			  }
+			}
+		}""",
+	"variables": {
+		"proposal": {
+			"id": "",
+			"content": {
+			  "total_votes": 2
+			}
+		}
+	}
+}
+
+
 CERAMIC_UPDATE_JSON = {
 	"query": """mutation UpdateNounsProposal($proposal: UpdateNounsProposalInput!) {
 			updateNounsProposal(input: $proposal) {
 			  document{ 
-			    blocknumber
+			    total_votes
 			  }
 			}
-		}"""
+		}""",
+	"variables": {
+		"proposal": {
+			"id": "kjzl6kcym7w8y6xvzuqpfviyatgr0ngrsz9axxtith8p2eo37ygimkb338mz3ok",
+			"content": {
+			  "total_votes": 2
+			}
+		}
+	}
 }
 
 CERAMIC_PUBLISH_JSON = {
