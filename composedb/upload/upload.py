@@ -25,9 +25,6 @@ HEADERS = {
 
 def call_thegraph():
   url_lilnouns_thegraph = "https://api.thegraph.com/subgraphs/name/lilnounsdao/lil-nouns-subgraph"
-  #if DRY_RUN:
-  #  return TEST_RESPONSE_THEGRAPH
-
   response = requests.post(url_lilnouns_thegraph, json=THEGRAPH_GET_PROPOSALS, headers=HEADERS)
   return response.json()['data']['proposals']
 
