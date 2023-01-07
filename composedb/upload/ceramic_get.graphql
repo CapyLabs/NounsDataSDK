@@ -1,1 +1,0 @@
-{"query":"query { nounsProposalIndex(first:10){edges { node { id } }} }"}

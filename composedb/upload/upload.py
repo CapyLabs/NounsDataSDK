@@ -62,7 +62,6 @@ def main():
 
     ceramic_endpoint = config['DEFAULT']['CeramicGraphQlEndpoint']
 
-
     latest_proposals = call_thegraph()
     print('Loaded ' + str(len(latest_proposals)) + ' proposals from thegraph')
 
