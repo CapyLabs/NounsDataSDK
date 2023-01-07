@@ -23,31 +23,31 @@ HEADERS = {
 }
 
 
+def call_thegraph():
+  url_lilnouns_thegraph = "https://api.thegraph.com/subgraphs/name/lilnounsdao/lil-nouns-subgraph"
+  #if DRY_RUN:
+  #  return TEST_RESPONSE_THEGRAPH
+
+  response = requests.post(url_lilnouns_thegraph, json=THEGRAPH_GET_PROPOSALS, headers=HEADERS)
+  return response.json()['data']['proposals']
+
+
 def call_ceramic(ceramic_endpoint):
     response = requests.post(ceramic_endpoint, json=CERAMIC_GET_JSON, headers=HEADERS)
     response.raise_for_status()
     if response.status_code != 200:
         print(str(response))
         raise Exception("Failed to execute query")
-
-    print('\n\n\n')
     data = response.json()['data']['nounsProposalIndex']['edges']
-    print(str(data))
-
     return data
 
 
-def call_thegraph():
-  url_lilnouns_thegraph = "https://api.thegraph.com/subgraphs/name/lilnounsdao/lil-nouns-subgraph"
-  print(str(TEST_RESPONSE_THEGRAPH))
-
-  if DRY_RUN:
-    return TEST_RESPONSE_THEGRAPH
-
-  response = requests.post(url_lilnouns_thegraph, json=THEGRAPH_GET_PROPOSALS, headers=HEADERS)
-  print(str(response.json()))
-  print('DRY_RUN: ' + str(DRY_RUN))
-  return response.json()['data']['proposals']
+def build_proposal_id_to_ceramic_id_map(uploaded_proposals):
+    map_proposal_id_to_ceramic_id = {}
+    for ceramic_proposal in uploaded_proposals:
+      proposal_obj = ceramic_proposal['node']
+      map_proposal_id_to_ceramic_id[proposal_obj['proposal_id']] = proposal_obj['id']
+    return map_proposal_id_to_ceramic_id
 
 
 def main():
@@ -72,6 +72,22 @@ def main():
     # Check if in ceramic by id
     # If not in ceramic, create
     # If in ceramic, update
+
+    map_proposal_id_to_ceramic_id = build_proposal_id_to_ceramic_id_map(uploaded_proposals)
+    already_uploaded_proposal_ids = map_proposal_id_to_ceramic_id.keys()
+
+    for groundtruth_proposal in latest_proposals:
+
+      if groundtruth_proposal['id'] not in already_uploaded_proposal_ids:
+        print('Create new ceramic stream for proposal id ' + str(groundtruth_proposal['id']))
+        # Create new ceramic proposal
+        pass
+      else:
+        ceramic_id = map_proposal_id_to_ceramic_id[groundtruth_proposal['id']]
+        print('Update proposal id %d, ceramic id %s ' % (groundtruth_proposal['id'], ceramic_id))
+        # Update existing ceramic proposal
+        # Maybe check if voting ended already
+        pass
 
 
 if __name__ == '__main__':

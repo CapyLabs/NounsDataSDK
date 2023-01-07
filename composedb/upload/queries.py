@@ -21,7 +21,12 @@ THEGRAPH_GET_PROPOSALS = {"query": """{
   }"""}
 
 CERAMIC_GET_JSON = {
-	"query": """query { nounsProposalIndex(last:1000) {edges { node { id } }} }"""	
+	"query": """query { nounsProposalIndex(last:1000) {edges { node { 
+		id 
+	  	blocknumber
+	    proposal_id
+	    state
+	} }} }"""	
 }
 
 
@@ -120,4 +125,13 @@ TEST_RESPONSE_THEGRAPH = [
 	   "6900000000000000000"
 	]
 }]
+
+
+TEST_CERAMIC_GET_ONE_JSON = {
+	"query": """
+query { node(id: "kjzl6kcym7w8y6xvzuqpfviyatgr0ngrsz9axxtith8p2eo37ygimkb338mz3ok") {
+		  id
+	}
+   }"""	
+}
 
