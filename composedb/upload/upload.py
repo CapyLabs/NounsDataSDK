@@ -16,6 +16,9 @@ from queries import CERAMIC_GET_JSON
 from queries import CERAMIC_UPDATE_JSON
 from queries import THEGRAPH_GET_PROPOSALS
 from queries import TEST_RESPONSE_THEGRAPH
+from queries import CERAMIC_BASE_PROPOSAL_OBJ
+from queries import CERAMIC_PUBLISH_JSON_TEMPLATE
+from queries import CERAMIC_UPDATE_TEMPLATE_JSON
 
 DRY_RUN = False
 HEADERS = {
@@ -30,13 +33,64 @@ def call_thegraph():
 
 
 def call_ceramic(ceramic_endpoint):
-    response = requests.post(ceramic_endpoint, json=CERAMIC_GET_JSON, headers=HEADERS)
-    response.raise_for_status()
-    if response.status_code != 200:
-        print(str(response))
-        raise Exception("Failed to execute query")
-    data = response.json()['data']['nounsProposalIndex']['edges']
-    return data
+  response = requests.post(ceramic_endpoint, json=CERAMIC_GET_JSON, headers=HEADERS)
+  response.raise_for_status()
+  if response.status_code != 200:
+      print(str(response))
+      raise Exception("Failed to execute query")
+  data = response.json()['data']['nounsProposalIndex']['edges']
+  return data
+
+
+# Map thegraph response to ceramic model key & values
+THEGRAPH_CERAMIC_KEY_MAP = {
+  'createdBlock': 'blocknumber',
+  'createdTimestamp': 'createdTimestamp',
+  'id': 'proposal_id',
+  #'values': 'requested_eth', # This is an array
+  #'total_votes': '', # Add these up
+  'status': 'state',
+  'forVotes': 'votes_for',
+  'againstVotes': 'votes_against',
+  'abstainVotes': 'votes_abstain',
+  'description': 'description'
+}
+
+
+def create_ceramic_proposal(groundtruth_proposal):
+  ceramic_proposal_obj = CERAMIC_BASE_PROPOSAL_OBJ
+  for k, v in groundtruth_proposal.items():
+    if k in THEGRAPH_CERAMIC_KEY_MAP.keys():
+      ceramic_proposal_obj[THEGRAPH_CERAMIC_KEY_MAP[k]] = v
+
+  obj = CERAMIC_PUBLISH_JSON_TEMPLATE
+  obj['variables']['proposal']['content'] = ceramic_proposal_obj
+
+  print('\n\nfinal proposal object in ceramic format: ' + str(obj))
+  # TODO: RPC
+
+
+def update_ceramic_proposal(ceramic_id, groundtruth_proposal):
+  BASE_OBJ = {
+    'id': ceramic_id,
+    'content': {
+      # ... 
+    }
+  }
+
+  # THEGRAPH_CERAMIC_KEY_MAP and CERAMIC_UPDATE_TEMPLATE_JSON
+  # must have the same keys
+
+  ceramic_proposal_obj = BASE_OBJ
+  for k, v in groundtruth_proposal.items():
+    if k in THEGRAPH_CERAMIC_KEY_MAP.keys():
+      ceramic_proposal_obj['content'][THEGRAPH_CERAMIC_KEY_MAP[k]] = v
+
+  obj = CERAMIC_UPDATE_TEMPLATE_JSON
+  obj['variables']['proposal'] = ceramic_proposal_obj
+
+  # TODO: RPC
+  print('\n\nfinal proposal object in ceramic format: ' + str(ceramic_proposal_obj))
 
 
 def build_proposal_id_to_ceramic_id_map(uploaded_proposals):
@@ -78,12 +132,14 @@ def main():
       if groundtruth_proposal['id'] not in already_uploaded_proposal_ids:
         print('Create new ceramic stream for proposal id ' + str(groundtruth_proposal['id']))
         # Create new ceramic proposal
+        create_ceramic_proposal(groundtruth_proposal)
         pass
       else:
         ceramic_id = map_proposal_id_to_ceramic_id[groundtruth_proposal['id']]
         print('Update proposal id %d, ceramic id %s ' % (groundtruth_proposal['id'], ceramic_id))
         # Update existing ceramic proposal
         # Maybe check if voting ended already
+        update_ceramic_proposal(ceramic_id, groundtruth_proposal)
         pass
 
 
