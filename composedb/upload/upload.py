@@ -159,15 +159,13 @@ def main():
       if groundtruth_proposal['id'] not in already_uploaded_proposal_ids:
         print('Create new ceramic stream for proposal id ' + str(groundtruth_proposal['id']))
         # Create new ceramic proposal
-        create_ceramic_proposal(groundtruth_proposal)
-        pass
+        create_ceramic_proposal(groundtruth_proposal, ceramic_endpoint)
       else:
         ceramic_id = map_proposal_id_to_ceramic_id[groundtruth_proposal['id']]
         print('Update proposal id %d, ceramic id %s ' % (groundtruth_proposal['id'], ceramic_id))
         # Update existing ceramic proposal
         # Maybe check if voting ended already
-        update_ceramic_proposal(ceramic_id, groundtruth_proposal)
-        pass
+        update_ceramic_proposal(ceramic_id, groundtruth_proposal, ceramic_endpoint)
 
 
 if __name__ == '__main__':
