@@ -171,7 +171,7 @@ def main():
         # TODO: Besides checking that the proposal is not active, check
         # that any values or votes changed before doing RPC to update
 
-        # This is wrong, it shold check uploaded proposal != active
+        # This is wrong, it shold check uploaded proposal == active
         # if groundtruth_proposal['status'] != 'ACTIVE':
         #   continue
         # Maybe the outermost loop should loop over uploaded_proposals first...
