@@ -2,6 +2,7 @@
 #  pip3 install psycopg2-binary
 import psycopg2
 
+import sys
 import argparse
 import configparser
 import requests
@@ -45,16 +46,16 @@ def call_ceramic(ceramic_endpoint):
 
 # Map thegraph response to ceramic model key & values
 THEGRAPH_CERAMIC_KEY_MAP = {
-  'createdBlock': 'blocknumber',
-  'createdTimestamp': 'createdTimestamp',
-  'id': 'proposal_id',
+  "createdBlock": "blocknumber",
+  "createdTimestamp": "created_timestamp",
+  "id": "proposal_id",
   #'values': 'requested_eth', # This is an array
   #'total_votes': '', # Add these up
-  'status': 'state',
-  'forVotes': 'votes_for',
-  'againstVotes': 'votes_against',
-  'abstainVotes': 'votes_abstain',
-  'description': 'description'
+  "status": "state",
+  "forVotes": "votes_for",
+  "againstVotes": "votes_against",
+  "abstainVotes": "votes_abstain",
+  "description": "description"
 }
 
 
@@ -62,10 +63,12 @@ def create_ceramic_proposal(groundtruth_proposal, ceramic_endpoint):
   ceramic_proposal_obj = CERAMIC_BASE_PROPOSAL_OBJ
   for k, v in groundtruth_proposal.items():
     if k in THEGRAPH_CERAMIC_KEY_MAP.keys():
+      if k != 'description' and k != 'status':
+        v = int(v)
       ceramic_proposal_obj[THEGRAPH_CERAMIC_KEY_MAP[k]] = v
 
   obj = CERAMIC_PUBLISH_JSON_TEMPLATE
-  obj['variables']['proposal']['content'] = ceramic_proposal_obj
+  obj["variables"]["proposal"]["content"] = ceramic_proposal_obj
 
   print('\n\nfinal proposal object in ceramic format: ' + str(obj))
 
@@ -73,10 +76,11 @@ def create_ceramic_proposal(groundtruth_proposal, ceramic_endpoint):
     return None
 
   response = requests.post(ceramic_endpoint, json=obj, headers=HEADERS)
-  response.raise_for_status()
+  #response.raise_for_status()
   if response.status_code != 200:
-      print(str(response))
+      print(str(response) + ' - ' + response.text)
       raise Exception("Failed to execute query")
+      sys.exit(1)
 
   data = response.json()['data']
   print('create_ceramic_proposal response: ' + str(data))
@@ -97,21 +101,24 @@ def update_ceramic_proposal(ceramic_id, groundtruth_proposal, ceramic_endpoint):
   ceramic_proposal_obj = BASE_OBJ
   for k, v in groundtruth_proposal.items():
     if k in THEGRAPH_CERAMIC_KEY_MAP.keys():
-      ceramic_proposal_obj['content'][THEGRAPH_CERAMIC_KEY_MAP[k]] = v
+      if k != 'description' and k != 'status':
+        v = int(v)
+      ceramic_proposal_obj["content"][THEGRAPH_CERAMIC_KEY_MAP[k]] = v
 
   obj = CERAMIC_UPDATE_TEMPLATE_JSON
-  obj['variables']['proposal'] = ceramic_proposal_obj
+  obj["variables"]["proposal"] = ceramic_proposal_obj
 
-  print('\n\nfinal proposal object in ceramic format: ' + str(ceramic_proposal_obj))
+  print('\n\nfinal proposal object in ceramic format: ' + str(obj))
 
   if DRY_RUN:
     return None
 
   response = requests.post(ceramic_endpoint, json=obj, headers=HEADERS)
-  response.raise_for_status()
+  # response.raise_for_status()
   if response.status_code != 200:
-      print(str(response))
+      print(str(response) + ' - ' + response.text)
       raise Exception("Failed to execute query")
+      sys.exit(1)
 
   data = response.json()['data']
   print('update_ceramic_proposal response: ' + str(data))
@@ -155,13 +162,18 @@ def main():
 
     for groundtruth_proposal in latest_proposals:
 
-      if groundtruth_proposal['id'] not in already_uploaded_proposal_ids:
-        print('Create new ceramic stream for proposal id ' + str(groundtruth_proposal['id']))
+      groundtruth_proposal_id = int(groundtruth_proposal['id'])
+
+      # Need to make sure this check hadnles the case this is a str vs int type
+      if groundtruth_proposal_id not in already_uploaded_proposal_ids:
+        print('Create new ceramic stream for proposal id ' + str(groundtruth_proposal_id))
         # Create new ceramic proposal
         create_ceramic_proposal(groundtruth_proposal, ceramic_endpoint)
       else:
-        ceramic_id = map_proposal_id_to_ceramic_id[groundtruth_proposal['id']]
-        print('Update proposal id %d, ceramic id %s ' % (groundtruth_proposal['id'], ceramic_id))
+        # CHECK IF THIS IS NECESSARY! (if votes change)
+
+        ceramic_id = map_proposal_id_to_ceramic_id[groundtruth_proposal_id]
+        print('Update proposal id %d, ceramic id %s ' % (groundtruth_proposal_id, ceramic_id))
         # Update existing ceramic proposal
         # Maybe check if voting ended already
         update_ceramic_proposal(ceramic_id, groundtruth_proposal, ceramic_endpoint)
