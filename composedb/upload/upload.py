@@ -6,6 +6,7 @@ import argparse
 import configparser
 import requests
 import json
+import time
 
 # 1. Get the ComposeDb proposals that are not Executed/Canceled
 # 2. Get the postgres table nouns_proposals rows for those proposal_ids
@@ -67,7 +68,6 @@ def create_ceramic_proposal(groundtruth_proposal, ceramic_endpoint):
   obj['variables']['proposal']['content'] = ceramic_proposal_obj
 
   print('\n\nfinal proposal object in ceramic format: ' + str(obj))
-  # TODO: RPC
 
   if DRY_RUN:
     return None
@@ -87,7 +87,7 @@ def update_ceramic_proposal(ceramic_id, groundtruth_proposal, ceramic_endpoint):
   BASE_OBJ = {
     'id': ceramic_id,
     'content': {
-      # ... 
+      # This will be populated below... 
     }
   }
 
@@ -102,7 +102,6 @@ def update_ceramic_proposal(ceramic_id, groundtruth_proposal, ceramic_endpoint):
   obj = CERAMIC_UPDATE_TEMPLATE_JSON
   obj['variables']['proposal'] = ceramic_proposal_obj
 
-  # TODO: RPC
   print('\n\nfinal proposal object in ceramic format: ' + str(ceramic_proposal_obj))
 
   if DRY_RUN:
@@ -167,6 +166,7 @@ def main():
         # Maybe check if voting ended already
         update_ceramic_proposal(ceramic_id, groundtruth_proposal, ceramic_endpoint)
 
+      time.sleep(1) # Don't DDOS ceramic
 
 if __name__ == '__main__':
     main()
