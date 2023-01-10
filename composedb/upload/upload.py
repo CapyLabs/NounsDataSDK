@@ -171,8 +171,10 @@ def main():
         # TODO: Besides checking that the proposal is not active, check
         # that any values or votes changed before doing RPC to update
 
-        if groundtruth_proposal['status'] != 'ACTIVE':
-          continue
+        # This is wrong, it shold check uploaded proposal != active
+        # if groundtruth_proposal['status'] != 'ACTIVE':
+        #   continue
+        # Maybe the outermost loop should loop over uploaded_proposals first...
 
         ceramic_id = map_proposal_id_to_ceramic_id[groundtruth_proposal_id]
         print('Update proposal id %d, ceramic id %s ' % (groundtruth_proposal_id, ceramic_id))
