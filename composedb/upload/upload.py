@@ -57,7 +57,7 @@ THEGRAPH_CERAMIC_KEY_MAP = {
 }
 
 
-def create_ceramic_proposal(groundtruth_proposal):
+def create_ceramic_proposal(groundtruth_proposal, ceramic_endpoint):
   ceramic_proposal_obj = CERAMIC_BASE_PROPOSAL_OBJ
   for k, v in groundtruth_proposal.items():
     if k in THEGRAPH_CERAMIC_KEY_MAP.keys():
@@ -69,8 +69,21 @@ def create_ceramic_proposal(groundtruth_proposal):
   print('\n\nfinal proposal object in ceramic format: ' + str(obj))
   # TODO: RPC
 
+  if DRY_RUN:
+    return None
 
-def update_ceramic_proposal(ceramic_id, groundtruth_proposal):
+  response = requests.post(ceramic_endpoint, json=obj, headers=HEADERS)
+  response.raise_for_status()
+  if response.status_code != 200:
+      print(str(response))
+      raise Exception("Failed to execute query")
+
+  data = response.json()['data']
+  print('create_ceramic_proposal response: ' + str(data))
+  return data
+
+
+def update_ceramic_proposal(ceramic_id, groundtruth_proposal, ceramic_endpoint):
   BASE_OBJ = {
     'id': ceramic_id,
     'content': {
@@ -91,6 +104,20 @@ def update_ceramic_proposal(ceramic_id, groundtruth_proposal):
 
   # TODO: RPC
   print('\n\nfinal proposal object in ceramic format: ' + str(ceramic_proposal_obj))
+
+  if DRY_RUN:
+    return None
+
+  response = requests.post(ceramic_endpoint, json=obj, headers=HEADERS)
+  response.raise_for_status()
+  if response.status_code != 200:
+      print(str(response))
+      raise Exception("Failed to execute query")
+
+  data = response.json()['data']
+  print('update_ceramic_proposal response: ' + str(data))
+  return data
+
 
 
 def build_proposal_id_to_ceramic_id_map(uploaded_proposals):
@@ -132,15 +159,13 @@ def main():
       if groundtruth_proposal['id'] not in already_uploaded_proposal_ids:
         print('Create new ceramic stream for proposal id ' + str(groundtruth_proposal['id']))
         # Create new ceramic proposal
-        create_ceramic_proposal(groundtruth_proposal)
-        pass
+        create_ceramic_proposal(groundtruth_proposal, ceramic_endpoint)
       else:
         ceramic_id = map_proposal_id_to_ceramic_id[groundtruth_proposal['id']]
         print('Update proposal id %d, ceramic id %s ' % (groundtruth_proposal['id'], ceramic_id))
         # Update existing ceramic proposal
         # Maybe check if voting ended already
-        update_ceramic_proposal(ceramic_id, groundtruth_proposal)
-        pass
+        update_ceramic_proposal(ceramic_id, groundtruth_proposal, ceramic_endpoint)
 
 
 if __name__ == '__main__':
