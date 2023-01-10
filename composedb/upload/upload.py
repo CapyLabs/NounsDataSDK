@@ -9,10 +9,6 @@ import requests
 import json
 import time
 
-# 1. Get the ComposeDb proposals that are not Executed/Canceled
-# 2. Get the postgres table nouns_proposals rows for those proposal_ids
-# 3. Write to ComposeDb, updating those proposals, with new values 
-
 from queries import CERAMIC_PUBLISH_JSON
 from queries import CERAMIC_GET_JSON
 from queries import CERAMIC_UPDATE_JSON
@@ -157,6 +153,9 @@ def main():
     # If not in ceramic, create
     # If in ceramic, update
 
+    # TODO: Ignore any uploaded inactive proposals. Somehow we should store a 
+    # last relevant proposal_id and start from there
+
     map_proposal_id_to_ceramic_id = build_proposal_id_to_ceramic_id_map(uploaded_proposals)
     already_uploaded_proposal_ids = map_proposal_id_to_ceramic_id.keys()
 
@@ -164,21 +163,21 @@ def main():
 
       groundtruth_proposal_id = int(groundtruth_proposal['id'])
 
-      # Need to make sure this check hadnles the case this is a str vs int type
       if groundtruth_proposal_id not in already_uploaded_proposal_ids:
         print('Create new ceramic stream for proposal id ' + str(groundtruth_proposal_id))
-        # Create new ceramic proposal
         create_ceramic_proposal(groundtruth_proposal, ceramic_endpoint)
+        time.sleep(1) # Don't DDOS ceramic
       else:
-        # CHECK IF THIS IS NECESSARY! (if votes change)
+        # TODO: Besides checking that the proposal is not active, check
+        # that any values or votes changed before doing RPC to update
+
+        if groundtruth_proposal['status'] != 'ACTIVE':
+          continue
 
         ceramic_id = map_proposal_id_to_ceramic_id[groundtruth_proposal_id]
         print('Update proposal id %d, ceramic id %s ' % (groundtruth_proposal_id, ceramic_id))
-        # Update existing ceramic proposal
-        # Maybe check if voting ended already
         update_ceramic_proposal(ceramic_id, groundtruth_proposal, ceramic_endpoint)
-
-      time.sleep(1) # Don't DDOS ceramic
+        time.sleep(1) # Don't DDOS ceramic
 
 if __name__ == '__main__':
     main()
