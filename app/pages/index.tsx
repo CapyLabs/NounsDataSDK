@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import type { BasicProfile } from "@datamodels/identity-profile-basic";
 
-import ceramicLogo from '../public/ceramic.png'
+import ceramicLogo from '../public/noggles-wtf.png'
 import { useCeramicContext } from '../context'
 import { authenticateCeramic } from '../utils'
 import styles from '../styles/Home.module.css'
@@ -90,10 +90,10 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Your Decentralized Profile</h1>
+        <h1 className={styles.title}>Your NounsID Profile</h1>
         <Image
           src={ceramicLogo}
-          width="100"
+          width="250"
           height="100"
           className={styles.logo}
         />
@@ -108,7 +108,7 @@ const Home: NextPage = () => {
         ) : (
           <div className={styles.form}>
             <div className={styles.formGroup}>
-              <label>Name</label>
+              <label>Proposal preferences</label>
               <input
                 type="text"
                 defaultValue={profile?.name || ''}
@@ -118,7 +118,7 @@ const Home: NextPage = () => {
               />
             </div>
             <div className={styles.formGroup}>
-              <label>Description</label>
+              <label>Twitter handle</label>
               <input
                 type="text"
                 defaultValue={profile?.description || ''}
@@ -128,7 +128,7 @@ const Home: NextPage = () => {
               />
             </div>
             <div className={styles.formGroup}>
-              <label>Gender</label>
+              <label>Discourse name</label>
               <input
                 type="text"
                 defaultValue={profile?.gender || ''}
@@ -138,7 +138,7 @@ const Home: NextPage = () => {
               />
             </div>
             <div className={styles.formGroup}>
-              <label>Emoji</label>
+              <label>Timezone</label>
               <input
                 type="text"
                 defaultValue={profile?.emoji || ''}
