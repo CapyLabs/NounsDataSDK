@@ -1,22 +1,10 @@
 import ora from 'ora'
 
 import { spawn } from "child_process"
-import { EventEmitter } from 'events'
-import { writeComposite } from './composites.mjs';
+import { EventEmitter } from 'events';
 
 const events = new EventEmitter()
 const spinner = ora();
-
-const bootstrap = async () => {
-  try {
-    spinner.info("[Composites] bootstrapping composites");
-    await writeComposite(spinner)
-    spinner.succeed("Composites] composites bootstrapped");
-  } catch (err) {
-    spinner.fail(err.message)
-    ceramic.kill()
-  }
-}
 
 const graphiql = async () => {
   spinner.info("[GraphiQL] starting graphiql");
@@ -38,8 +26,7 @@ const next = async () => {
 const start = async () => {
   try {
     spinner.start('[Ceramic] Setting up Ceramic node\n')
-    await bootstrap()
-    graphiql()
+    // graphiql()
     next()
   } catch (err) {
     spinner.fail(err)

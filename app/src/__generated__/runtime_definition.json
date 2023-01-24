@@ -1,37 +1,23 @@
 {
   "models": {
-    "BasicProfile": {
-      "id": "kjzl6hvfrbw6c631kjg0aja15u1p0s6h9alw67jpf9a8qm7oecve0lnf5wst5mh",
-      "accountRelation": {
-        "type": "single"
-      }
+    "NounishProfile": {
+      "id": "kjzl6hvfrbw6ca02lpn94dtzq5tn7vge0t9ayomihoba1ax0erj2xgun2j8qmo6",
+      "accountRelation": { "type": "single" }
     }
   },
   "objects": {
-    "BasicProfile": {
-      "name": {
-        "type": "string",
-        "required": true
-      },
-      "emoji": {
-        "type": "string",
-        "required": false
-      },
-      "gender": {
-        "type": "string",
-        "required": false
-      },
-      "description": {
-        "type": "string",
-        "required": false
-      }
+    "NounishProfile": {
+      "time_zone": { "type": "string", "required": false },
+      "eth_address": { "type": "string", "required": true },
+      "discord_username": { "type": "string", "required": false },
+      "twitter_username": { "type": "string", "required": false },
+      "discourse_username": { "type": "string", "required": false },
+      "farcaster_username": { "type": "string", "required": false },
+      "proposal_category_preference": { "type": "string", "required": false }
     }
   },
   "enums": {},
   "accountData": {
-    "basicProfile": {
-      "type": "node",
-      "name": "BasicProfile"
-    }
+    "nounishProfile": { "type": "node", "name": "NounishProfile" }
   }
 }
