@@ -1,0 +1,24 @@
+# User-owned profile that identifies the user across the Nouniverse
+# Deployed on Clay Testnet as kjzl6hvfrbw6ca02lpn94dtzq5tn7vge0t9ayomihoba1ax0erj2xgun2j8qmo6
+# 
+# Convert schema to composite and deploy:
+# $ composedb composite:create nounish_profile.graphql --output=generated/nounish_profile_composite.json -k=$private_key -c=http://localhost:7007
+# $ composedb composite:deploy generated/nounish_profile_composite.json -k=$private_key -c=http://localhost:7007
+# 
+# [Optional] Compile composite and check the schema:
+# $ composedb composite:compile generated/nounish_profile_composite.json generated/nounish_profile_runtime_composite.json
+# $ composedb graphql:schema generated/nounish_profile_runtime_composite.json
+#
+# Start GraphiQL server:
+# $ composedb graphql:server --ceramic-url=http://localhost:7007 --graphiql --port=5001 generated/nounish_profile_runtime_composite.json --did-private-key=$private_key
+# https://composedb.js.org/docs/0.3.x/first-composite
+
+type NounishProfile @createModel(accountRelation: SINGLE, description: "Profile for Nounish users") {
+  eth_address: String! @string(minLength: 42, maxLength: 42)
+  proposal_category_preference: String @string(maxLength:255)
+  time_zone: String @string(minLength: 9, maxLength: 9) # Format: UTC−07:00
+  discourse_username: String @string(maxLength: 255)
+  discord_username: String @string(maxLength: 255) # Including the numbers at the end
+  twitter_username: String @string(maxLength: 255)
+  farcaster_username: String @string(maxLength: 255)
+}

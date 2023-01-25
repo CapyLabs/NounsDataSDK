@@ -1,0 +1,10 @@
+# Copy of the NounishProfile datamodel. 
+type NounishProfile @createModel(accountRelation: SINGLE, description: "Profile for Nounish users") {
+  eth_address: String! @string(minLength: 42, maxLength: 42)
+  proposal_category_preference: String @string(maxLength:255)
+  time_zone: String @string(minLength: 9, maxLength: 9) # Format: UTC−07:00
+  discourse_username: String @string(maxLength: 255)
+  discord_username: String @string(maxLength: 255) # Including the numbers at the end
+  twitter_username: String @string(maxLength: 255)
+  farcaster_username: String @string(maxLength: 255)
+}
