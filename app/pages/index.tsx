@@ -105,6 +105,7 @@ const Home: NextPage = () => {
           width="250"
           height="100"
           className={styles.logo}
+          alt=""
         />
         {profile === undefined && ceramic.did === undefined ? (
           <button
@@ -173,7 +174,6 @@ const Home: NextPage = () => {
                 type="text"
                 defaultValue={profile?.farcaster_username || ''}
                 onChange={(e) => {
-                  console.log("Farcaster Change" + e.target.value)
                   setProfile({ ...profile, farcaster_username: e.target.value });
                 }}
               />
