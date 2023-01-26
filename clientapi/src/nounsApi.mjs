@@ -89,10 +89,10 @@ query { nounishProfileIndex(last:1000) {edges { node {
 console.log(JSON.stringify(profile))*/
 
 
-
+//definition //as RuntimeCompositeDefinition,
 const composeClient = new ComposeClient({
   ceramic: "https://nounsdata.wtf:7007",
-  definition: definition_nounishProfile //definition //as RuntimeCompositeDefinition,
+  definition: definition_nounishProfile 
 });
 
 const authenticate = async () => {
@@ -121,6 +121,10 @@ export const getCeramicProposals = async () => {
   return await composeClient.executeQuery(QUERY_GET_PROPOSALS)
 }
 
+export const writeNounishProfile = async (profile) => {
+  // TODO
+}
+
 
 const start = async () => {
 
@@ -133,6 +137,14 @@ const start = async () => {
   const proposals = await getCeramicProposals();
   console.log(JSON.stringify(proposals))
 
+  const newProfile = {
+    "discord_username": "champion yore",
+    "proposal_category_preference": "philanthropy",
+    "eth_address": "0xbabababababababababababababababababababa"
+  }
+
+  const result = writeNounishProfile(profile)
+  console.log(JOSN.stringify(result))
 }
 
 start() 
