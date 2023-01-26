@@ -10,6 +10,10 @@ import { Ed25519Provider } from "key-did-provider-ed25519";
 import { getResolver } from "key-did-resolver";
 import { fromString } from "uint8arrays/from-string";
 
+import { getProposals } from "./SourceProposals.mjs"
+import { getPropHouse } from "./SourcePropHouse.mjs"
+import { getSnapshot } from "./SourceSnapshot.mjs"
+
 const definition = {
   "models": {
     "NounsProposal": {
@@ -146,6 +150,9 @@ const start = async () => {
 
   console.log(JSON.stringify(testWrite))
 
+  // await getProposals()
+  // await getPropHouse()
+  // await getSnapshot()
 }
 
 
