@@ -1,7 +1,3 @@
-
-
-// import { readFileSync } from 'fs';
-
 import { CeramicClient } from "@ceramicnetwork/http-client"
 import { ComposeClient } from "@composedb/client";
 
@@ -53,7 +49,6 @@ const definition = {
   }
 }
 
-
 const definition_nounishProfile = {
   "models": {
     "NounishProfile": {
@@ -78,11 +73,6 @@ const definition_nounishProfile = {
   }
 }
 
-
-
-const ceramic = new CeramicClient( "http://52.37.30.180:7007");
-  console.log('ceramic.did: ' + JSON.stringify(ceramic.did))
-
 /*
 const profile = await composeClient.executeQuery(`
 query { nounishProfileIndex(last:1000) {edges { node { 
@@ -97,6 +87,10 @@ console.log(JSON.stringify(profile))*/
 
 
 
+const composeClient = new ComposeClient({
+  ceramic: "https://nounsdata.wtf:7007",
+  definition: definition_nounishProfile //definition //as RuntimeCompositeDefinition,
+});
 
 const authenticate = async () => {
   console.log('ennter authenticate')
@@ -111,32 +105,20 @@ const authenticate = async () => {
     provider: new Ed25519Provider(key)
   })
   await did.authenticate()
-  ceramic.did = did
-  console.log('ceramic.did: ' + JSON.stringify(ceramic.did))
-
+  composeClient.setDID(did)
+  console.log('composeClient.did: ' + JSON.stringify(composeClient.did))
 }
-
 
 const start = async () => {
 
   await authenticate()
 
-
-  const composeClient = new ComposeClient({
-    ceramic: "http://52.37.30.180:7007",
-    definition: definition_nounishProfile //definition //as RuntimeCompositeDefinition,
-  });
-
-  composeClient.setDID(ceramic.did)
-
-
-  console.log('before testWrite ceramic.did: ' + JSON.stringify(ceramic.did))
   const testWrite = await composeClient.executeQuery(`        
          mutation {
             createNounishProfile(input: {
               content: {
                 discord_username: "champion bore",
-                proposal_category_preference: "treasury"
+                proposal_category_preference: "treasuries"
                 eth_address: "0xbabababababababababababababababababababa"
               }
             }) 
@@ -150,29 +132,6 @@ const start = async () => {
 
   console.log(JSON.stringify(testWrite))
 
-  // await getProposals()
-  // await getPropHouse()
-  // await getSnapshot()
 }
 
-
-
-
 start() 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

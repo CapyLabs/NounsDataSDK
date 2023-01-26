@@ -11,7 +11,7 @@ import { RuntimeCompositeDefinition } from "@composedb/types";
 const ceramic = new CeramicClient(process.env.CERAMIC_URI);
 
 const composeClient = new ComposeClient({
-  ceramic: "http://52.37.30.180:7007",
+  ceramic: "https://nounsdata.wtf:7007",
   definition: definition as RuntimeCompositeDefinition,
 });
 
