@@ -46,10 +46,13 @@ export const getProposals = async () => {
 		})
 	})
 
+	let proposals = []
+
 	const responseObject = await response.json()
 
 	for (const proposal of responseObject['data']['proposals']) {
-		 console.log(JSON.stringify(proposal))
-		 break;
+		 proposals.push(proposal)
 	}
+
+	return proposals
 }
