@@ -101,6 +101,7 @@ const authenticate = async () => {
     seed,
     "base16"
   );
+  console.log('key: ' + key)
   const did = new DID({
     resolver: getResolver(),
     provider: new Ed25519Provider(key)
@@ -121,6 +122,8 @@ const start = async () => {
     ceramic: "http://52.37.30.180:7007",
     definition: definition_nounishProfile //definition //as RuntimeCompositeDefinition,
   });
+
+  composeClient.setDID(ceramic.did)
 
 
   console.log('before testWrite ceramic.did: ' + JSON.stringify(ceramic.did))
