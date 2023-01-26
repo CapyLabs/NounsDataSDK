@@ -1,8 +1,8 @@
 {
-  "name": "clientapi2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "nounsdata",
+  "version": "0.0.3",
+  "description": "Nouns data layer built on CeramicDB",
+  "main": "src/index.mjs",
   "dependencies": {
     "@ceramicnetwork/http-client": "^2.13.0",
     "@composedb/client": "^0.3.1",
