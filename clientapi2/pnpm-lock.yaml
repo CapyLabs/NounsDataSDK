@@ -4,11 +4,21 @@ specifiers:
   '@ceramicnetwork/http-client': ^2.13.0
   '@composedb/client': ^0.3.1
   '@composedb/types': ^0.3.1
+  did-session: ^1.0.0
+  dids: ^3.2.0
+  key-did-provider-ed25519: ^2.0.1
+  key-did-resolver: ^2.1.3
+  uint8arrays: ^4.0.2
 
 dependencies:
   '@ceramicnetwork/http-client': 2.15.0
   '@composedb/client': 0.3.1
   '@composedb/types': 0.3.1
+  did-session: 1.0.0
+  dids: 3.4.0
+  key-did-provider-ed25519: 2.0.1
+  key-did-resolver: 2.3.0
+  uint8arrays: 4.0.3
 
 packages:
 
@@ -659,6 +669,11 @@ packages:
     resolution: {integrity: sha512-LcknSilhIGatDAsY1ak2I8VtGaHNhgMSYVxFrGLXv+xLHytaKZKcaUJJUE7qmBr7h33o5YQwP55pMI0xmkpJwg==}
     dev: false
 
+  /bigint-mod-arith/3.1.2:
+    resolution: {integrity: sha512-nx8J8bBeiRR+NlsROFH9jHswW5HO8mgfOSqW0AmjicMMvaONDa8AO+5ViKDUUNytBPWiwfvZP4/Bj4Y3lUfvgQ==}
+    engines: {node: '>=10.4.0'}
+    dev: false
+
   /bignumber.js/9.1.1:
     resolution: {integrity: sha512-pHm4LsMJ6lzgNGVfZHjMoO8sdoRhOzOH4MLmY65Jg70bpxCKu5iOHNJyfF6OyvYw7t8Fpf35RuzUyqnQsj8Vig==}
     dev: false
@@ -784,6 +799,20 @@ packages:
     resolution: {integrity: sha512-eHs2VLKhcANmh08S87PKvOauIAmSOd7nb7AlhNxcvOyDAIGQY1UfbiqI1VOW5IDKvOO6aEWY+5edOt1qrCp1Eg==}
     dev: false
 
+  /did-session/1.0.0:
+    resolution: {integrity: sha512-hLKlfPGoEp9T6malsuNyF1bCrU0AcECZJ1SP2lvbHiic7ko2PdiZPmmVipVId+ZqmshU4AlLLEozZc9Iu1X1UA==}
+    engines: {node: '>=14.14'}
+    dependencies:
+      '@ceramicnetwork/stream-tile': 2.14.0
+      '@stablelib/random': 1.0.2
+      dids: 3.4.0
+      key-did-provider-ed25519: 2.0.1
+      key-did-resolver: 2.3.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /dids/3.4.0:
     resolution: {integrity: sha512-hXHkOTL9E5R4rbQwDVOktiiEq57Y6yWOEYjev1ojOpMr2Rkx9g8bw0v6BQIsbPB94aaYxUCtaejNl2FrublfiA==}
     engines: {node: '>=14.14'}
@@ -813,6 +842,10 @@ packages:
 
   /fast-json-patch/3.1.1:
     resolution: {integrity: sha512-vf6IHUX2SBcA+5/+4883dsIjpBTqmfBjmYiWK1savxQmFk4JfBMLa7ynTYOs1Rolp/T1betJxHiGD3g1Mn8lUQ==}
+    dev: false
+
+  /fast-json-stable-stringify/2.1.0:
+    resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
     dev: false
 
   /filter-obj/1.1.0:
@@ -899,6 +932,28 @@ packages:
     resolution: {integrity: sha512-XQmWYj2Sm4kn4WeTYvmpKEbyPsL7nBsb647c7pMe6l02/yx2+Jfc4dT6UZkEXnIUb5LhD55r2HPsJ1milQ4rDg==}
     dev: false
 
+  /key-did-provider-ed25519/2.0.1:
+    resolution: {integrity: sha512-FaB2g7zUAeN/bLaFl2YSNQx9NsxgDd/3TR1YGvoXLhENsvZBdyA2V7hX8/MZhZ5jm82wL5lRw3O4UXuz/pJANQ==}
+    engines: {node: '>=14.14'}
+    dependencies:
+      '@stablelib/ed25519': 1.0.3
+      did-jwt: 6.11.0
+      fast-json-stable-stringify: 2.1.0
+      rpc-utils: 0.6.2
+      uint8arrays: 3.1.1
+    dev: false
+
+  /key-did-resolver/2.3.0:
+    resolution: {integrity: sha512-q3ChQILPe+u8qkpWP196fEoxsygEyjM3K25qrGaMSolVaUdfgj7qwMz2DE/GRIlfNK2HgKW6KXA8RZMy8aL4MA==}
+    dependencies:
+      '@stablelib/ed25519': 1.0.3
+      bigint-mod-arith: 3.1.2
+      multiformats: 9.9.0
+      nist-weierstrauss: 1.5.1
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+    dev: false
+
   /lodash.clonedeep/4.5.0:
     resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
     dev: false
@@ -962,6 +1017,14 @@ packages:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
+    dev: false
+
+  /nist-weierstrauss/1.5.1:
+    resolution: {integrity: sha512-TtfkjxfCPYWljG4zSQgHVnzpwNj5pTlIKSxyPlXpsRpA9B8PJchKoIDe7ZIvfzPwZTzawhhGAqngFrM+7Elf0g==}
+    engines: {node: '>=14.06'}
+    dependencies:
+      multiformats: 9.9.0
+      uint8arrays: 2.1.10
     dev: false
 
   /node-fetch/2.6.7:
@@ -1067,6 +1130,12 @@ packages:
 
   /typedarray-to-buffer/4.0.0:
     resolution: {integrity: sha512-6dOYeZfS3O9RtRD1caom0sMxgK59b27+IwoNy8RDPsmslSGOyU+mpTamlaIW7aNKi90ZQZ9DFaZL3YRoiSCULQ==}
+    dev: false
+
+  /uint8arrays/2.1.10:
+    resolution: {integrity: sha512-Q9/hhJa2836nQfEJSZTmr+pg9+cDJS9XEAp7N2Vg5MzL3bK/mkMVfjscRGYruP9jNda6MAdf4QD/y78gSzkp6A==}
+    dependencies:
+      multiformats: 9.9.0
     dev: false
 
   /uint8arrays/3.1.1:

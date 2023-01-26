@@ -1,10 +1,15 @@
 
 
+// import { readFileSync } from 'fs';
 
 import { CeramicClient } from "@ceramicnetwork/http-client"
 import { ComposeClient } from "@composedb/client";
 
-//import { definition } from "./__generated__/definition.js";
+import { DID } from 'dids';
+import { Ed25519Provider } from "key-did-provider-ed25519";
+import { getResolver } from "key-did-resolver";
+import { fromString } from "uint8arrays/from-string";
+
 const definition = {
   "models": {
     "NounsProposal": {
@@ -45,41 +50,105 @@ const definition = {
 }
 
 
-// import { RuntimeCompositeDefinition } from "@composedb/types";
+const definition_nounishProfile = {
+  "models": {
+    "NounishProfile": {
+      "id": "kjzl6hvfrbw6ca02lpn94dtzq5tn7vge0t9ayomihoba1ax0erj2xgun2j8qmo6",
+      "accountRelation": { "type": "single" }
+    }
+  },
+  "objects": {
+    "NounishProfile": {
+      "time_zone": { "type": "string", "required": false },
+      "eth_address": { "type": "string", "required": true },
+      "discord_username": { "type": "string", "required": false },
+      "twitter_username": { "type": "string", "required": false },
+      "discourse_username": { "type": "string", "required": false },
+      "farcaster_username": { "type": "string", "required": false },
+      "proposal_category_preference": { "type": "string", "required": false }
+    }
+  },
+  "enums": {},
+  "accountData": {
+    "nounishProfile": { "type": "node", "name": "NounishProfile" }
+  }
+}
 
-/**
- * Configure ceramic Client & create context.
- */
+
+
 const ceramic = new CeramicClient( "http://52.37.30.180:7007");
+  console.log('ceramic.did: ' + JSON.stringify(ceramic.did))
 
-const composeClient = new ComposeClient({
-  ceramic: "http://52.37.30.180:7007",
-  definition: definition //as RuntimeCompositeDefinition,
-});
-
-
+/*
 const profile = await composeClient.executeQuery(`
-        query {
-          viewer {
-            basicProfile {
-              id
-              name
-              description
-              gender
-              emoji
-            }
-          }
-        }
+query { nounishProfileIndex(last:1000) {edges { node { 
+  id 
+  discord_username
+  proposal_category_preference
+  farcaster_username
+}}}}
       `);
-console.log(profile)
+
+console.log(JSON.stringify(profile))*/
 
 
 
 
+const authenticate = async () => {
+  console.log('ennter authenticate')
+  const seed = "bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688"
+  const key = fromString(
+    seed,
+    "base16"
+  );
+  const did = new DID({
+    resolver: getResolver(),
+    provider: new Ed25519Provider(key)
+  })
+  await did.authenticate()
+  ceramic.did = did
+  console.log('ceramic.did: ' + JSON.stringify(ceramic.did))
+
+}
+
+
+const start = async () => {
+
+  await authenticate()
+
+
+  const composeClient = new ComposeClient({
+    ceramic: "http://52.37.30.180:7007",
+    definition: definition_nounishProfile //definition //as RuntimeCompositeDefinition,
+  });
+
+
+  console.log('before testWrite ceramic.did: ' + JSON.stringify(ceramic.did))
+  const testWrite = await composeClient.executeQuery(`        
+         mutation {
+            createNounishProfile(input: {
+              content: {
+                discord_username: "champion bore",
+                proposal_category_preference: "treasury"
+                eth_address: "0xbabababababababababababababababababababa"
+              }
+            }) 
+            {
+              document {
+                discord_username
+                proposal_category_preference
+              }
+            }
+          }`)
+
+  console.log(JSON.stringify(testWrite))
+
+}
 
 
 
 
+start() 
 
 
 
