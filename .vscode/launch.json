@@ -6,6 +6,12 @@
             "request": "launch",
             "url": "http://localhost:3000/",
             "webRoot": "${workspaceFolder}/app"
+        },
+        {
+            "type": "node",
+            "name": "Run uploader",
+            "request": "launch",
+            "program": "${workspaceFolder}/importer/src/uploader.mjs"
         }
     ]
 }

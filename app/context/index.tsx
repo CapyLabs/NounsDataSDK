@@ -1,34 +1,25 @@
 import { createContext, useContext } from "react";
-import { CeramicClient } from "@ceramicnetwork/http-client"
-import { ComposeClient } from "@composedb/client";
-
-import { definition } from "../src/__generated__/definition.js";
-import { RuntimeCompositeDefinition } from "@composedb/types";
+import { NounsDataClient } from "../../library/dist/NounsDataClient.js";//"nounsdata/dist/NounsDataClient";
 
 /**
- * Configure ceramic Client & create context.
+ * Configure NounsDataClient & create context.
  */
-const ceramic = new CeramicClient(process.env.CERAMIC_URI);
+const nounsDataClient = new NounsDataClient()
 
-const composeClient = new ComposeClient({
-  ceramic: "https://nounsdata.wtf:7007",
-  definition: definition as RuntimeCompositeDefinition,
-});
+const NounsDataContext = createContext({nounsDataClient: nounsDataClient});
 
-const CeramicContext = createContext({ceramic: ceramic, composeClient: composeClient});
-
-export const CeramicWrapper = ({ children }: any) => {
+export const NounsDataWrapper = ({ children }: any) => {
   return (
-    <CeramicContext.Provider value={{ceramic, composeClient}}>
+    <NounsDataContext.Provider value={{nounsDataClient}}>
       {children}
-    </CeramicContext.Provider>
+    </NounsDataContext.Provider>
   );
 };
 
 /**
- * Provide access to the Ceramic & Compose clients.
- * @example const { ceramic, compose } = useCeramicContext()
- * @returns CeramicClient
+ * Provide access to NounsDataClient.
+ * @example const { nounsDataClient } = useNounsDataContext()
+ * @returns NounsDataClient
  */
 
-export const useCeramicContext = () => useContext(CeramicContext);
+export const useNounsDataContext = () => useContext(NounsDataContext);

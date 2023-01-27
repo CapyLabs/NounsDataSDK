@@ -4,91 +4,50 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
 import noggles from '../public/noggles-wtf.png'
-import { useCeramicContext } from '../context'
+import { useNounsDataContext } from '../context'
 import { authenticateCeramic } from '../utils'
 import styles from '../styles/Home.module.css'
-import { NounishProfile } from '../models/NounishProfile'
+import { NounishProfile } from 'nounsdata/model/NounishProfile'
 
 const Home: NextPage = () => {
-  const clients = useCeramicContext()
-  const { ceramic, composeClient } = clients
+  const { nounsDataClient } = useNounsDataContext()
   const [profile, setProfile] = useState<NounishProfile | undefined>()
   const [loading, setLoading] = useState<boolean>(false)
 
   const handleLogin = async () => {
-    await authenticateCeramic(ceramic, composeClient)
+    await nounsDataClient.authenticate("bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688")
+    // await authenticateCeramic(ceramic, composeClient)
     await getProfile()
   }
 
   const getProfile = async () => {
     setLoading(true)
-    if(ceramic.did !== undefined) {
-      const profile = await composeClient.executeQuery(`
-        query {
-          viewer {
-            nounishProfile {
-              id
-              time_zone
-              eth_address
-              discord_username
-              twitter_username
-              discourse_username
-              farcaster_username
-              proposal_category_preference
-            }
-          }
-        }
-      `);
-      
-      setProfile(profile?.data?.viewer?.nounishProfile)
+    if (nounsDataClient.isAuthenticated()) {
+      const profile = await nounsDataClient.getAuthenticatedNounishProfile()
+      console.log(profile)
+      setProfile(profile)
       setLoading(false);
     }
   }
-  
+
   const updateProfile = async () => {
     setLoading(true);
-    if (ceramic.did !== undefined) {
-      const update = await composeClient.executeQuery(`
-        mutation {
-          createNounishProfile(input: {
-            content: {
-              eth_address: "${profile?.eth_address}"
-              time_zone: "${profile?.time_zone ?? ""}"
-              discord_username: "${profile?.discord_username ?? ""}"
-              twitter_username: "${profile?.twitter_username ?? ""}"
-              discourse_username: "${profile?.discourse_username ?? ""}"
-              farcaster_username: "${profile?.farcaster_username ?? ""}"
-              proposal_category_preference: "${profile?.proposal_category_preference ?? ""}"
-            }
-          }) 
-          {
-            document {
-              eth_address
-              time_zone
-              discord_username
-              twitter_username
-              discourse_username
-              farcaster_username
-              proposal_category_preference
-            }
-          }
-        }
-      `);
-      await getProfile();
+    if (nounsDataClient.isAuthenticated() && profile !== undefined) {
+      console.log(await nounsDataClient.writeAuthenticatedNounishProfile(profile))
       setLoading(false);
     }
   }
-  
+
   /**
    * On load check if there is a DID-Session in local storage.
    * If there is a DID-Session we can immediately authenticate the user.
    * For more details on how we do this check the 'authenticateCeramic function in`../utils`.
    */
   useEffect(() => {
-    if(localStorage.getItem('did')) {
+    if (localStorage.getItem('did')) {
       handleLogin()
     }
-  }, [ ])
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -107,7 +66,7 @@ const Home: NextPage = () => {
           className={styles.logo}
           alt=""
         />
-        {profile === undefined && ceramic.did === undefined ? (
+        {profile === undefined && !nounsDataClient.isAuthenticated() ? (
           <button
             onClick={() => {
               handleLogin();
@@ -190,9 +149,9 @@ const Home: NextPage = () => {
             </div>
             <div className={styles.buttonContainer}>
               <button
-              onClick={() => {
-                updateProfile();
-              }}>
+                onClick={() => {
+                  updateProfile();
+                }}>
                 {loading ? 'Loading...' : 'Update Profile'}
               </button>
             </div>

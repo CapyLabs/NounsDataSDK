@@ -12,7 +12,7 @@ import { DID } from 'dids';
 import { Ed25519Provider } from "key-did-provider-ed25519";
 import { getResolver } from "key-did-resolver";
 import { fromString } from "uint8arrays/from-string";
-import { QUERY_GET_NOUNISH_PROFILES, QUERY_GET_PROPOSALS } from "./queries.js";
+import { QUERY_GET_VIEWER_NOUNISH_PROFILE, QUERY_GET_PROPOSALS } from "./queries.js";
 import { definition } from "./__generated__/definition.js";
 export class NounsDataClient {
     constructor() {
@@ -20,6 +20,9 @@ export class NounsDataClient {
             ceramic: "https://nounsdata.wtf:7007",
             definition: definition
         });
+    }
+    isAuthenticated() {
+        return this.composeClient.did !== undefined;
     }
     authenticate(seed) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32,30 +35,71 @@ export class NounsDataClient {
             this.composeClient.setDID(did);
         });
     }
-    getNounishProfile() {
-        return this.composeClient.executeQuery(QUERY_GET_NOUNISH_PROFILES);
-    }
-    getCeramicProposals() {
-        return this.composeClient.executeQuery(QUERY_GET_PROPOSALS);
+    getAuthenticatedNounishProfile() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.isAuthenticated()) {
+                return new Promise((resolve, reject) => {
+                    reject("Must authenticate before calling getAuthenticatedNounishProfile");
+                });
+            }
+            return this.composeClient
+                .executeQuery(QUERY_GET_VIEWER_NOUNISH_PROFILE)
+                .then((value) => new Promise((resolve, reject) => {
+                if (value.errors) {
+                    reject(value.errors);
+                }
+                else {
+                    const response = value;
+                    resolve(response.data.viewer.nounishProfile);
+                }
+            }));
+        });
     }
     writeNounishProfile(profile) {
-        return this.composeClient.executeQuery(`        
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.isAuthenticated()) {
+                return new Promise((resolve, reject) => {
+                    reject("Must authenticate before calling writeNounishProfile");
+                });
+            }
+            return this.composeClient.executeQuery(`        
       mutation {
         createNounishProfile(input: {
           content: {
             eth_address: "${profile.eth_address}"
+            time_zone: "${profile.time_zone}"
             discord_username: "${profile.discord_username}"
+            twitter_username: "${profile.twitter_username}"
+            discourse_username: "${profile.discourse_username}"
+            farcaster_username: "${profile.farcaster_username}"
             proposal_category_preference: "${profile.proposal_category_preference}"
           }
         }) 
         {
           document {
             eth_address
+            time_zone
             discord_username
+            twitter_username
+            discourse_username
+            farcaster_username
             proposal_category_preference
           }
         }
-      }`);
+      }`)
+                .then((value) => new Promise((resolve, reject) => {
+                if (value.errors) {
+                    reject(value.errors);
+                }
+                else {
+                    const response = value;
+                    resolve(response.data.createNounishProfile.document);
+                }
+            }));
+        });
+    }
+    getCeramicProposals() {
+        return this.composeClient.executeQuery(QUERY_GET_PROPOSALS);
     }
     writeProposal(proposal) {
     }

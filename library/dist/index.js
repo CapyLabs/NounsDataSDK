@@ -11,6 +11,6 @@ import { NounsDataClient } from "./NounsDataClient.js";
 export const start = () => __awaiter(void 0, void 0, void 0, function* () {
     const client = new NounsDataClient();
     yield client.authenticate("bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688");
-    console.log("getNounishProfile()" + JSON.stringify(yield client.getNounishProfile()));
+    console.log("getNounishProfile()" + JSON.stringify(yield client.getAuthenticatedNounishProfile()));
     console.log("getCeramicProposals()" + JSON.stringify(yield client.getCeramicProposals()));
 });

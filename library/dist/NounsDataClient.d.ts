@@ -4,9 +4,10 @@ import { NounishProfile } from "../model/NounishProfile.js";
 export declare class NounsDataClient {
     composeClient: ComposeClient;
     constructor();
+    isAuthenticated(): boolean;
     authenticate(seed: string): Promise<void>;
-    getNounishProfile(): Promise<ExecutionResult<any>>;
+    getAuthenticatedNounishProfile(): Promise<NounishProfile>;
+    writeNounishProfile(profile: NounishProfile): Promise<NounishProfile>;
     getCeramicProposals(): Promise<ExecutionResult<any>>;
-    writeNounishProfile(profile: NounishProfile): Promise<ExecutionResult<Record<string, unknown>, import("graphql/jsutils/ObjMap.js").ObjMap<unknown>>>;
     writeProposal(proposal: any): void;
 }
