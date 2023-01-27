@@ -1,6 +1,6 @@
 {
   "name": "nounsdata",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Nouns data layer built on CeramicDB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
