@@ -55,11 +55,11 @@ export class NounsDataClient {
             }));
         });
     }
-    writeNounishProfile(profile) {
+    writeAuthenticatedNounishProfile(profile) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.isAuthenticated()) {
                 return new Promise((resolve, reject) => {
-                    reject("Must authenticate before calling writeNounishProfile");
+                    reject("Must authenticate before calling writeAuthenticatedNounishProfile");
                 });
             }
             return this.composeClient.executeQuery(`        

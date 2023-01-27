@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
-import { NounsDataClient } from "../../library/dist/NounsDataClient.js";//"nounsdata/dist/NounsDataClient";
+// import { NounsDataClient } from "../../library/dist/NounsDataClient.js";
+import { NounsDataClient } from "nounsdata/dist/NounsDataClient";
 
 /**
  * Configure NounsDataClient & create context.

@@ -1,10 +1,10 @@
 lockfileVersion: 5.4
 
 specifiers:
-  nounsdata: ^0.0.5
+  nounsdata: ^0.0.6
 
 dependencies:
-  nounsdata: 0.0.5
+  nounsdata: 0.0.6
 
 packages:
 
@@ -1025,8 +1025,8 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
-  /nounsdata/0.0.5:
-    resolution: {integrity: sha512-gFYeRwSDPa5qQOJ8w10f3UWJLXIs4WIdOJwV1UX4cyvflo1Ep8d3AqLMxsNBMVvM7jiLNglystaE492cjvHgZw==}
+  /nounsdata/0.0.6:
+    resolution: {integrity: sha512-XJsxkTyrxQxg5+lg+Tvn42fvBQOIKG09+cg3ewz34fbqg67rru6zR5cdLhP4zsjP1l4/iTV7TrAmpDt+oCQDIA==}
     dependencies:
       '@ceramicnetwork/http-client': 2.15.0
       '@composedb/client': 0.3.1

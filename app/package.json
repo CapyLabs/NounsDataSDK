@@ -26,7 +26,7 @@
     "ora": "^6.1.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "nounsdata": "^0.0.4"
+    "nounsdata": "^0.0.6"
   },
   "devDependencies": {
     "@composedb/types": "^0.3.0",

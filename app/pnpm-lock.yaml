@@ -22,7 +22,7 @@ specifiers:
   key-did-provider-ed25519: ^2.0.1
   key-did-resolver: ^2.1.3
   next: ^12.0.4
-  nounsdata: ^0.0.4
+  nounsdata: ^0.0.6
   ora: ^6.1.2
   react: ^18.0.0
   react-dom: ^18.0.0
@@ -43,7 +43,7 @@ dependencies:
   dids: 3.4.0
   graphql: 16.6.0
   next: 12.3.4_biqbaboplfbrettd7655fr4n2y
-  nounsdata: 0.0.4
+  nounsdata: 0.0.6
   ora: 6.1.2
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -3046,8 +3046,8 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
-  /nounsdata/0.0.4:
-    resolution: {integrity: sha512-jKaFdVIY1lRpjNvunmwynCQwi2SqDTSqyZXgcgZwKS8itFPf4hszuA+qKGj9K8mvuEyFgwH5M9G5ucSr3Uom5A==}
+  /nounsdata/0.0.6:
+    resolution: {integrity: sha512-XJsxkTyrxQxg5+lg+Tvn42fvBQOIKG09+cg3ewz34fbqg67rru6zR5cdLhP4zsjP1l4/iTV7TrAmpDt+oCQDIA==}
     dependencies:
       '@ceramicnetwork/http-client': 2.15.0
       '@composedb/client': 0.3.1

@@ -1,8 +1,8 @@
 import { getProposals } from "./SourceProposals.mjs"
 import { getPropHouse } from "./SourcePropHouse.mjs"
 import { getSnapshot } from "./SourceSnapshot.mjs"
-import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
-// import { NounsDataClient } from "nounsdata/dist/NounsDataClient.js"
+// import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
+import { NounsDataClient } from "nounsdata/dist/NounsDataClient.js"
 
 const start = async () => {
   const client = new NounsDataClient()

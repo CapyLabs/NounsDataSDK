@@ -7,7 +7,7 @@ export declare class NounsDataClient {
     isAuthenticated(): boolean;
     authenticate(seed: string): Promise<void>;
     getAuthenticatedNounishProfile(): Promise<NounishProfile>;
-    writeNounishProfile(profile: NounishProfile): Promise<NounishProfile>;
+    writeAuthenticatedNounishProfile(profile: NounishProfile): Promise<NounishProfile>;
     getCeramicProposals(): Promise<ExecutionResult<any>>;
     writeProposal(proposal: any): void;
 }
