@@ -1,22 +1,30 @@
 {
   "name": "nounsdata",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Nouns data layer built on CeramicDB",
-  "main": "src/index.mjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
   "dependencies": {
     "@ceramicnetwork/http-client": "^2.13.0",
     "@composedb/client": "^0.3.1",
     "@composedb/types": "^0.3.1",
     "did-session": "^1.0.0",
     "dids": "^3.2.0",
+    "graphql": "^16.6.0",
     "key-did-provider-ed25519": "^2.0.1",
     "key-did-resolver": "^2.1.3",
     "uint8arrays": "^4.0.2"
   },
   "scripts": {
+    "prepublish": "pnpm run build",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
 }

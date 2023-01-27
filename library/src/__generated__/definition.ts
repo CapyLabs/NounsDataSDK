@@ -3,6 +3,10 @@ export const definition = {
     "NounsProposal": {
       "id": "kjzl6hvfrbw6c8sde0sbybhp8z3s500ru1c4ifawovkqxet5h77gjyybu1567uj",
       "accountRelation": { "type": "list" }
+    },
+    "NounishProfile": {
+      "id": "kjzl6hvfrbw6ca02lpn94dtzq5tn7vge0t9ayomihoba1ax0erj2xgun2j8qmo6",
+      "accountRelation": { "type": "single" }
     }
   },
   "objects": {
@@ -29,10 +33,20 @@ export const definition = {
       "total_distinct_voters": { "type": "integer", "required": true },
       "distinct_votes_abstain": { "type": "integer", "required": true },
       "distinct_voters_against": { "type": "integer", "required": true }
+    },
+    "NounishProfile": {
+      "time_zone": { "type": "string", "required": false },
+      "eth_address": { "type": "string", "required": true },
+      "discord_username": { "type": "string", "required": false },
+      "twitter_username": { "type": "string", "required": false },
+      "discourse_username": { "type": "string", "required": false },
+      "farcaster_username": { "type": "string", "required": false },
+      "proposal_category_preference": { "type": "string", "required": false }
     }
   },
   "enums": {},
   "accountData": {
-    "nounsProposalList": { "type": "connection", "name": "NounsProposal" }
+    "nounsProposalList": { "type": "connection", "name": "NounsProposal" },
+    "nounishProfile": { "type": "node", "name": "NounishProfile" }
   }
 }
