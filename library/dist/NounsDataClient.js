@@ -39,23 +39,23 @@ export class NounsDataClient {
         return this.composeClient.executeQuery(QUERY_GET_PROPOSALS);
     }
     writeNounishProfile(profile) {
-        // TODO: Use relay.dev
         return this.composeClient.executeQuery(`        
-         mutation {
-            createNounishProfile(input: {
-              content: {
-                discord_username: "aaas 25522bore",
-                proposal_category_preference: "treasuries"
-                eth_address: "0xbabababababababababababababababababababa"
-              }
-            }) 
-            {
-              document {
-                discord_username
-                proposal_category_preference
-              }
-            }
-          }`);
+      mutation {
+        createNounishProfile(input: {
+          content: {
+            eth_address: "${profile.eth_address}"
+            discord_username: "${profile.discord_username}"
+            proposal_category_preference: "${profile.proposal_category_preference}"
+          }
+        }) 
+        {
+          document {
+            eth_address
+            discord_username
+            proposal_category_preference
+          }
+        }
+      }`);
     }
     writeProposal(proposal) {
     }
