@@ -30,15 +30,13 @@ const getTheGraphProposals = async () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({query: QUERY_PROPOSALS})
       })
-    return await response.json()
-      
+    const json =  await response.json()
+    return json //return json['data']['proposal']  
 }
 
 const getCeramicProposals = (ceramicResponse) => {
   var proposals = []
-
   const ceramicProposals = ceramicResponse['data']['nounsProposalIndex']['edges']
-
   ceramicProposals.forEach((proposal) => {
     var proposal = proposal['node']
     proposals.push(proposal)
@@ -60,42 +58,60 @@ const THEGRAPH_CERAMIC_KEY_MAP = {
 
 const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
   let ceramic_proposal = {}
-
   for (const [key, value] of Object.entries(thegraph_proposal)) {
     ceramic_proposal[THEGRAPH_CERAMIC_KEY_MAP[key]] = value
   }
+  return ceramic_proposal
 }
+
+const ceramicProposalsEqual = (a, b) => {
+  for (const [key, value] of Object.entries(THEGRAPH_CERAMIC_KEY_MAP)) {
+    if (a[value] + "" != b[value] + "") {
+      return false
+    }
+  }
+  return true
+}
+
+const buildProposalIdToCeramicIdMap = (ceramicProposals) => {
+  let map_proposal_id_to_ceramic_id = {}
+  for (const proposal of ceramicProposals) {
+    map_proposal_id_to_ceramic_id[proposal['proposal_id']] = proposal['id']
+  }
+  return map_proposal_id_to_ceramic_id;
+}
+
+const flip = (data) => Object.fromEntries(
+  Object
+    .entries(data)
+    .map(([key, value]) => [value, key])
+  );
 
 const start = async () => {
   const client = new NounsDataClient()
-
   await client.authenticate("bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688")
 
-  /*
-  console.log("getAuthenticatedNounishProfile:")
-  try {
-    console.log(JSON.stringify(await client.getAuthenticatedNounishProfile()))
-  } catch (e) {
-    console.log("ERROR: ", e)
-  }*/
-
-
-
-  // If closed, skip this one
-  // If exists and is the same, return
-  // Write proposal
-  const proposals = await getTheGraphProposals();
+  const thegraphResponse = await getTheGraphProposals()
+  const thegraphProposals = thegraphResponse['data']['proposals']
 
   const ceramicResponse = await client.getCeramicProposals()
   const ceramicProposals = getCeramicProposals(ceramicResponse)
 
-  ceramicProposals.forEach((proposal) => {
-    
-    if(proposal['state'] == 'ACTIVE') {
-      console.log('active proposal ' + proposal.proposal_id)
-      return;
+  const map_proposal_id_to_ceramic_id = buildProposalIdToCeramicIdMap(ceramicProposals)
+  const already_uploaded_proposal_ids = Object.keys(map_proposal_id_to_ceramic_id)
+
+  for (const thegraphProposal of thegraphProposals) {
+    if (!already_uploaded_proposal_ids.includes(thegraphProposal['id'])) {
+      // TODO: Create new ceramic stream
+      console.log('Create new ceramic Proposal id ' + thegraphProposal['id'])
+    } else {
+      // TODO: Upsert ceramic stream
+      const ceramic_id = map_proposal_id_to_ceramic_id[thegraphProposal['id']]
+      
+      const upsertData = theGraphProposalToCeramicProposal(thegraphProposal)
+      console.log('Update ceramic id ' + ceramic_id + ' with thegraph id ' + thegraphProposal['id'] )
     }
-  })
+  }
 }
 
 start() 

@@ -108,7 +108,56 @@ export class NounsDataClient {
     return this.composeClient.executeQuery(QUERY_GET_PROPOSALS)
   }
 
-  public writeProposal(proposal: any) {
+
+  public async writeProposal(proposal: any): Promise<any> {
 
   }
+  
+  // TODO: Test this call, use from importer
+  /*public async writeProposal(proposal: any): Promise<any> {
+    if (!this.isAuthenticated()) {
+      return new Promise((resolve, reject) => {
+        reject("Must authenticate before calling writeAuthenticatedNounishProfile")
+      })
+    }
+
+    return this.composeClient.executeQuery(`        
+      mutation {
+        createNounsProposal(input: {
+          content: {
+            description: "${proposal.description}"
+            state: "${proposal.state}"
+            blocknumber: "${proposal.blocknumber}"
+            proposal_id: "${proposal.proposal_id}"
+            votes_for: "${proposal.votes_for}"
+            votes_against: "${proposal.votes_against}"
+            votes_abstain: "${proposal.votes_abstain}"
+            created_timestamp: "${proposal.created_timestamp}"
+          }
+        }) 
+        {
+          document {
+            description
+            state
+            blocknumber
+            proposal_id
+            votes_for
+            votes_against
+            votes_abstain
+            created_timestamp
+          }
+        }
+      }`)
+      .then(
+        (value) =>
+          new Promise((resolve, reject) => {
+            if (value.errors) {
+              reject(value.errors)
+            } else {
+              const response = value as CreateNounishProfileResponse
+              resolve(response.data.createNounishProfile.document);
+            }
+          })
+      )
+  }*/
 }
