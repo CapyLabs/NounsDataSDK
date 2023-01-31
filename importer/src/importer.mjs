@@ -81,12 +81,6 @@ const buildProposalIdToCeramicIdMap = (ceramicProposals) => {
   return map_proposal_id_to_ceramic_id;
 }
 
-const flip = (data) => Object.fromEntries(
-  Object
-    .entries(data)
-    .map(([key, value]) => [value, key])
-  );
-
 const start = async () => {
   const client = new NounsDataClient()
   await client.authenticate("bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688")
