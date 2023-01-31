@@ -109,7 +109,7 @@ export class NounsDataClient {
   }
 
 
-  public async writeProposal(proposal: any): Promise<any> {
+  public writeProposal(proposal: any) {
 
   }
   

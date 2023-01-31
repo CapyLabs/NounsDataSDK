@@ -1,9 +1,8 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -98,9 +97,52 @@ export class NounsDataClient {
             }));
         });
     }
+    writeProposal(proposal) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.isAuthenticated()) {
+                return new Promise((resolve, reject) => {
+                    reject("Must authenticate before calling writeAuthenticatedNounishProfile");
+                });
+            }
+            return this.composeClient.executeQuery(`        
+      mutation {
+        createNounsProposal(input: {
+          content: {
+            description: "${proposal.description}"
+            state: "${proposal.state}"
+            blocknumber: "${proposal.blocknumber}"
+            proposal_id: "${proposal.proposal_id}"
+            votes_for: "${proposal.votes_for}"
+            votes_against: "${proposal.votes_against}"
+            votes_abstain: "${proposal.votes_abstain}"
+            created_timestamp: "${proposal.created_timestamp}"
+          }
+        }) 
+        {
+          document {
+            description
+            state
+            blocknumber
+            proposal_id
+            votes_for
+            votes_against
+            votes_abstain
+            created_timestamp
+          }
+        }
+      }`)
+                .then((value) => new Promise((resolve, reject) => {
+                if (value.errors) {
+                    reject(value.errors);
+                }
+                else {
+                    const response = value;
+                    resolve(response.data.createNounishProfile.document);
+                }
+            }));
+        });
+    }
     getCeramicProposals() {
         return this.composeClient.executeQuery(QUERY_GET_PROPOSALS);
-    }
-    writeProposal(proposal) {
     }
 }
