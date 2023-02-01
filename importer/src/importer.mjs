@@ -1,8 +1,8 @@
 import { getProposals } from "./SourceProposals.mjs"
 import { getPropHouse } from "./SourcePropHouse.mjs"
 import { getSnapshot } from "./SourceSnapshot.mjs"
-import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
-// import { NounsDataClient } from "nounsdata/dist/NounsDataClient.js"
+// import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
+import { NounsDataClient } from "nounsdata/dist/NounsDataClient.js"
 
 import fetch from 'cross-fetch'
 
@@ -17,9 +17,40 @@ const QUERY_PROPOSALS = `{
     abstainVotes
     againstVotes
     forVotes
+    proposer {
+      id
+    }
     createdBlock
+    endBlock
+    startBlock
   }
 }`
+
+const THEGRAPH_CERAMIC_KEY_MAP = {
+  "createdBlock": "blocknumber",
+  "createdTimestamp": "created_timestamp",
+  "id": "proposal_id",
+  "status": "state",
+  "forVotes": "votes_for",
+  "againstVotes": "votes_against",
+  "abstainVotes": "votes_abstain",
+  "description": "description",
+  "startBlock": "start_block",
+  "endBlock": "end_block",
+}
+
+const TODO_REQUIRED_KEYS = {
+  "distinct_voters_against": 0,
+  "distinct_votes_abstain": 0,
+  "total_distinct_voters": 0,
+  "distinct_voters_for": 0,
+  "transactionhash": "",
+  "quorum_required": 0,
+  "unique_holders": 0,
+  "total_supply": 0,
+  "total_votes": 0,
+  "proposer": '0x0', // TODO: This one is important to implement, u can parse the nested field
+}
 
 /*const QUERY_PROPOSALS = `{
   proposals(orderBy: createdTimestamp, orderDirection: desc) {
@@ -57,21 +88,21 @@ const getCeramicProposals = (ceramicResponse) => {
   return proposals;
 }
 
-const THEGRAPH_CERAMIC_KEY_MAP = {
-  "createdBlock": "blocknumber",
-  "createdTimestamp": "created_timestamp",
-  "id": "proposal_id",
-  "status": "state",
-  "forVotes": "votes_for",
-  "againstVotes": "votes_against",
-  "abstainVotes": "votes_abstain",
-  "description": "description"
-}
-
+// Why does undefined appear here
+// TODO: merge in TODO_REQUIRED_KEYS
 const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
   let ceramic_proposal = {}
   for (const [key, value] of Object.entries(thegraph_proposal)) {
+    if (key == undefined) {
+      continue
+    }
+    if (!key in THEGRAPH_CERAMIC_KEY_MAP) {
+      continue
+    }
     ceramic_proposal[THEGRAPH_CERAMIC_KEY_MAP[key]] = value
+  }
+  for (const [key, value] of Object.entries(TODO_REQUIRED_KEYS)) {
+    ceramic_proposal[key] = value
   }
   return ceramic_proposal
 }
@@ -109,16 +140,33 @@ const start = async () => {
   const dry_run = false
 
   for (const thegraphProposal of thegraphProposals) {
+
+
+
+    // TODO This is for testing    
+    if (thegraphProposal['id'] != '93') {
+      continue
+    }
+
+
     if (!already_uploaded_proposal_ids.includes(thegraphProposal['id'])) {
       // TODO: Create new ceramic stream
+
       console.log('Create new ceramic Proposal id ' + thegraphProposal['id'])
-    
-      const thegraph_proposal_ceramic_format = theGraphProposalToCeramicProposal(thegraphProposal)
+
+      var thegraph_proposal_ceramic_format = theGraphProposalToCeramicProposal(thegraphProposal)
+      delete thegraph_proposal_ceramic_format['undefined']
+
       console.log('writeProposal(' + JSON.stringify(thegraph_proposal_ceramic_format))
-      if (!dry_run) {
+      
+      try {
         const response = await client.writeProposal(thegraph_proposal_ceramic_format)
+
         console.log('ceramic writeProposal response ' + JSON.stringify(response))
+      } catch (e) {
+        console.log('ceramic writeProposal exception ' + e)
       }
+
     } else {
       // TODO: Upsert ceramic stream
       const ceramic_id = map_proposal_id_to_ceramic_id[thegraphProposal['id']]

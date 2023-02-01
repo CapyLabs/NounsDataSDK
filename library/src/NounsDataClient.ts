@@ -115,9 +115,6 @@ export class NounsDataClient {
       })
     }
 
-    const desc = proposal.description;
-    proposal.description = desc.replace(/(\r\n|\n|\r)/gm, "") 
-
     const create_proposal_query = `mutation CreateNounsProposal($proposal: CreateNounsProposalInput!) {
       createNounsProposal(input: $proposal) {
           document {
@@ -130,6 +127,18 @@ export class NounsDataClient {
             votes_abstain
             description
             state
+            start_block
+            end_block
+            distinct_voters_against
+            distinct_votes_abstain
+            total_distinct_voters
+            distinct_voters_for
+            transactionhash
+            quorum_required
+            unique_holders
+            total_supply
+            total_votes
+            proposer
           }
         }
     }`
