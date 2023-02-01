@@ -16,13 +16,25 @@ const QUERY_PROPOSALS = `{
     createdTimestamp
     abstainVotes
     againstVotes
+    forVotes
+    createdBlock
+  }
+}`
+
+/*const QUERY_PROPOSALS = `{
+  proposals(orderBy: createdTimestamp, orderDirection: desc) {
+    id
+    description
+    status
+    createdTimestamp
+    abstainVotes
+    againstVotes
     executionETA
     forVotes
     proposalThreshold
     targets
-    values
   }
-}`
+}`*/
 
 const getTheGraphProposals = async () => {
     const response = await fetch(URL_THEGRAPH_LILNOUNS, {
@@ -94,10 +106,19 @@ const start = async () => {
   const map_proposal_id_to_ceramic_id = buildProposalIdToCeramicIdMap(ceramicProposals)
   const already_uploaded_proposal_ids = Object.keys(map_proposal_id_to_ceramic_id)
 
+  const dry_run = false
+
   for (const thegraphProposal of thegraphProposals) {
     if (!already_uploaded_proposal_ids.includes(thegraphProposal['id'])) {
       // TODO: Create new ceramic stream
       console.log('Create new ceramic Proposal id ' + thegraphProposal['id'])
+    
+      const thegraph_proposal_ceramic_format = theGraphProposalToCeramicProposal(thegraphProposal)
+      console.log('writeProposal(' + JSON.stringify(thegraph_proposal_ceramic_format))
+      if (!dry_run) {
+        const response = await client.writeProposal(thegraph_proposal_ceramic_format)
+        console.log('ceramic writeProposal response ' + JSON.stringify(response))
+      }
     } else {
       // TODO: Upsert ceramic stream
       const ceramic_id = map_proposal_id_to_ceramic_id[thegraphProposal['id']]

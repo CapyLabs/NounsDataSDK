@@ -108,46 +108,41 @@ export class NounsDataClient {
     return this.composeClient.executeQuery(QUERY_GET_PROPOSALS)
   }
 
-
-  public writeProposal(proposal: any) {
-
-  }
-  
-  // TODO: Test this call, use from importer
-  /*public async writeProposal(proposal: any): Promise<any> {
+  public async writeProposal(proposal: any): Promise<any> {
     if (!this.isAuthenticated()) {
       return new Promise((resolve, reject) => {
         reject("Must authenticate before calling writeAuthenticatedNounishProfile")
       })
     }
 
-    return this.composeClient.executeQuery(`        
-      mutation {
-        createNounsProposal(input: {
-          content: {
-            description: "${proposal.description}"
-            state: "${proposal.state}"
-            blocknumber: "${proposal.blocknumber}"
-            proposal_id: "${proposal.proposal_id}"
-            votes_for: "${proposal.votes_for}"
-            votes_against: "${proposal.votes_against}"
-            votes_abstain: "${proposal.votes_abstain}"
-            created_timestamp: "${proposal.created_timestamp}"
-          }
-        }) 
-        {
+    const desc = proposal.description;
+    proposal.description = desc.replace(/(\r\n|\n|\r)/gm, "") 
+
+    const create_proposal_query = `mutation CreateNounsProposal($proposal: CreateNounsProposalInput!) {
+      createNounsProposal(input: $proposal) {
           document {
-            description
-            state
             blocknumber
+            created_timestamp
             proposal_id
+            total_votes
             votes_for
             votes_against
             votes_abstain
-            created_timestamp
+            description
+            state
           }
         }
-      }`)
+    }`
+
+    const create_proposal_variables = {
+      "proposal": {
+        "content": proposal
+      }
+    }
+
+    return this.composeClient.executeQuery(
+      create_proposal_query,
+      create_proposal_variables)
       .then(
         (value) =>
           new Promise((resolve, reject) => {
@@ -159,5 +154,5 @@ export class NounsDataClient {
             }
           })
       )
-  }*/
+  }
 }
