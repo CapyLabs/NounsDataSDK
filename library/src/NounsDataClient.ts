@@ -158,8 +158,8 @@ export class NounsDataClient {
             if (value.errors) {
               reject(value.errors)
             } else {
-              const response = value as CreateNounishProfileResponse
-              resolve(response.data.createNounishProfile.document);
+              const response = value // as CreateNounishProfileResponse
+              resolve(response); //.data.createNounishProfile.document);
             }
           })
       )

@@ -52,6 +52,17 @@ const TODO_REQUIRED_KEYS = {
   "proposer": '0x0', // TODO: This one is important to implement, u can parse the nested field
 }
 
+const INT_TYPES = [
+  "votes_for",
+  "blocknumber",
+  "proposal_id",
+  "start_block",
+  "end_block",
+  "votes_abstain",
+  "votes_against",
+  "created_timestamp"
+]
+
 /*const QUERY_PROPOSALS = `{
   proposals(orderBy: createdTimestamp, orderDirection: desc) {
     id
@@ -90,18 +101,28 @@ const getCeramicProposals = (ceramicResponse) => {
 
 // Why does undefined appear here
 // TODO: merge in TODO_REQUIRED_KEYS
+// This function is essentially going to become
+// https://github.com/CapyLabs/eventspy/blob/main/GetEvents.py#L40
+
 const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
   let ceramic_proposal = {}
-  for (const [key, value] of Object.entries(thegraph_proposal)) {
+  for (var [key, value] of Object.entries(thegraph_proposal)) {
     if (key == undefined) {
       continue
     }
-    if (!key in THEGRAPH_CERAMIC_KEY_MAP) {
+    if (!(key in THEGRAPH_CERAMIC_KEY_MAP)) {
       continue
+    }
+    if (INT_TYPES.includes(THEGRAPH_CERAMIC_KEY_MAP[key])) {
+      value = parseInt(value)
+      console.log('int type ' + THEGRAPH_CERAMIC_KEY_MAP[key] )
     }
     ceramic_proposal[THEGRAPH_CERAMIC_KEY_MAP[key]] = value
   }
   for (const [key, value] of Object.entries(TODO_REQUIRED_KEYS)) {
+    if (THEGRAPH_CERAMIC_KEY_MAP[key] in INT_TYPES) {
+      value = parseInt(value)
+    }
     ceramic_proposal[key] = value
   }
   return ceramic_proposal
