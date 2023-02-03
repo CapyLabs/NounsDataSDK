@@ -1,8 +1,8 @@
 import { getProposals } from "./SourceProposals.mjs"
 import { getPropHouse } from "./SourcePropHouse.mjs"
 import { getSnapshot } from "./SourceSnapshot.mjs"
-// import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
-import { NounsDataClient } from "nounsdata/dist/NounsDataClient.js"
+import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
+// import { NounsDataClient } from "nounsdata/dist/NounsDataClient.js"
 
 import fetch from 'cross-fetch'
 
@@ -63,21 +63,6 @@ const INT_TYPES = [
   "created_timestamp"
 ]
 
-/*const QUERY_PROPOSALS = `{
-  proposals(orderBy: createdTimestamp, orderDirection: desc) {
-    id
-    description
-    status
-    createdTimestamp
-    abstainVotes
-    againstVotes
-    executionETA
-    forVotes
-    proposalThreshold
-    targets
-  }
-}`*/
-
 const getTheGraphProposals = async () => {
     const response = await fetch(URL_THEGRAPH_LILNOUNS, {
         method: 'POST',
@@ -99,11 +84,11 @@ const getCeramicProposals = (ceramicResponse) => {
   return proposals;
 }
 
-// Why does undefined appear here
-// TODO: merge in TODO_REQUIRED_KEYS
+
+// 'Internal Server Error': {"error":"Validation Error: data/description must NOT have more than 4096 characters"} 
+
 // This function is essentially going to become
 // https://github.com/CapyLabs/eventspy/blob/main/GetEvents.py#L40
-
 const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
   let ceramic_proposal = {}
   for (var [key, value] of Object.entries(thegraph_proposal)) {
@@ -125,6 +110,7 @@ const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
     }
     ceramic_proposal[key] = value
   }
+  ceramic_proposal['description'] = ceramic_proposal['description'].substring(0, 4090)
   return ceramic_proposal
 }
 
@@ -158,28 +144,21 @@ const start = async () => {
   const map_proposal_id_to_ceramic_id = buildProposalIdToCeramicIdMap(ceramicProposals)
   const already_uploaded_proposal_ids = Object.keys(map_proposal_id_to_ceramic_id)
 
-  const dry_run = false
-
   for (const thegraphProposal of thegraphProposals) {
 
-
-
     // TODO This is for testing    
-    if (thegraphProposal['id'] != '93') {
+    /*if (thegraphProposal['id'] != '93') {
       continue
-    }
-
+    }*/
 
     if (!already_uploaded_proposal_ids.includes(thegraphProposal['id'])) {
-      // TODO: Create new ceramic stream
-
       console.log('Create new ceramic Proposal id ' + thegraphProposal['id'])
 
       var thegraph_proposal_ceramic_format = theGraphProposalToCeramicProposal(thegraphProposal)
       delete thegraph_proposal_ceramic_format['undefined']
 
       console.log('writeProposal(' + JSON.stringify(thegraph_proposal_ceramic_format))
-      
+    
       try {
         const response = await client.writeProposal(thegraph_proposal_ceramic_format)
 
@@ -189,11 +168,17 @@ const start = async () => {
       }
 
     } else {
-      // TODO: Upsert ceramic stream
       const ceramic_id = map_proposal_id_to_ceramic_id[thegraphProposal['id']]
       
       const upsertData = theGraphProposalToCeramicProposal(thegraphProposal)
       console.log('Update ceramic id ' + ceramic_id + ' with thegraph id ' + thegraphProposal['id'] )
+    
+      try {
+        const response = await client.upsertProposal(ceramic_id, upsertData)
+        console.log('response: ' + JSON.stringify(response))
+      } catch (e) {
+        console.log('exception: ' + e)
+      }
     }
   }
 }

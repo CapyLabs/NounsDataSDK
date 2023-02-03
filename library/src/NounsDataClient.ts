@@ -108,6 +108,49 @@ export class NounsDataClient {
     return this.composeClient.executeQuery(QUERY_GET_PROPOSALS)
   }
 
+  public async upsertProposal(ceramicId: any, proposal: any) {
+    const upsert_proposal_query = `
+      mutation UpdateNounsProposal($proposal: UpdateNounsProposalInput!) {
+        updateNounsProposal(input: $proposal) {
+          document{ 
+            blocknumber
+            created_timestamp
+            proposal_id
+            state
+            votes_for
+            votes_against
+            votes_abstain
+            description
+            total_votes
+            proposer
+          }
+        }
+      }`
+
+    const upsert_proposal_variables = {
+      "proposal": {
+        "id": ceramicId,
+        "content": proposal
+      }
+    }
+
+
+    return this.composeClient.executeQuery(
+      upsert_proposal_query,
+      upsert_proposal_variables)
+      .then(
+        (value) =>
+          new Promise((resolve, reject) => {
+            if (value.errors) {
+              reject(value.errors)
+            } else {
+              const response = value // as CreateNounishProfileResponse
+              resolve(response); //.data.createNounishProfile.document);
+            }
+          })
+      )
+  }
+
   public async writeProposal(proposal: any): Promise<any> {
     if (!this.isAuthenticated()) {
       return new Promise((resolve, reject) => {
@@ -115,7 +158,8 @@ export class NounsDataClient {
       })
     }
 
-    const create_proposal_query = `mutation CreateNounsProposal($proposal: CreateNounsProposalInput!) {
+    const create_proposal_query = `
+    mutation CreateNounsProposal($proposal: CreateNounsProposalInput!) {
       createNounsProposal(input: $proposal) {
           document {
             blocknumber
