@@ -3,6 +3,7 @@ import { getPropHouse } from "./SourcePropHouse.mjs"
 import { getSnapshot } from "./SourceSnapshot.mjs"
 import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
 // import { NounsDataClient } from "nounsdata/dist/NounsDataClient.js"
+// import { URL_THEGRAPH_NOUNS } from "./secrets.mjs"
 
 import fetch from 'cross-fetch'
 
@@ -158,10 +159,10 @@ const start = async () => {
       delete thegraph_proposal_ceramic_format['undefined']
 
       console.log('writeProposal(' + JSON.stringify(thegraph_proposal_ceramic_format))
-    
+      
+
       try {
         const response = await client.writeProposal(thegraph_proposal_ceramic_format)
-
         console.log('ceramic writeProposal response ' + JSON.stringify(response))
       } catch (e) {
         console.log('ceramic writeProposal exception ' + e)
