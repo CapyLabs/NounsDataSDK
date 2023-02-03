@@ -15,8 +15,3 @@ type NounsProposalVote @createModel(accountRelation: LIST, description: "On-chai
   votes: Int! @int(min: 0)
   votesRaw: Int! @int(min: 0)
 }
-
-/*
-profile_stream_id: StreamID! @documentReference(model: "NounishProfile")
-profile: NounishProfile! @relationDocument(property: "profile_stream_id")
-*/
