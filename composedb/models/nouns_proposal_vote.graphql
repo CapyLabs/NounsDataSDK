@@ -1,0 +1,28 @@
+
+
+type NounsProposal @loadModel(id: "") {
+  proposal_id: Int!
+}
+
+Type NounishProfile @loadModel(id: "") {
+  eth_address: String!
+}
+
+type NounsProposalVote @createModel(accountRelation: LIST, description: "On-chain proposal votes") {
+  proposal_stream_id: StreamID! @documentReference(model: "NounsProposal")
+  nouns_proposal: NounsProposal! @relationDocument(property: "proposal_stream_id")
+
+  eth_address: String! @string(maxLength:256)
+  blocknumber: Int! @int(min: 0)
+  vote_id: String! @string(maxLength:512)
+  reason: String @string(maxLength:512)
+  support: Boolean!
+  supportDetailed: Int! @int(min: 0)
+  votes: Int! @int(min: 0)
+  votesRaw: Int! @int(min: 0)
+}
+
+/*
+profile_stream_id: StreamID! @documentReference(model: "NounishProfile")
+profile: NounishProfile! @relationDocument(property: "profile_stream_id")
+*/
