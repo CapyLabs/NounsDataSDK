@@ -1,11 +1,5 @@
-
-
-type NounsProposal @loadModel(id: "") {
+type NounsProposal @loadModel(id: "kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2") {
   proposal_id: Int!
-}
-
-Type NounishProfile @loadModel(id: "") {
-  eth_address: String!
 }
 
 type NounsProposalVote @createModel(accountRelation: LIST, description: "On-chain proposal votes") {
