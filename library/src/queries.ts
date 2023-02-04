@@ -33,6 +33,7 @@ export type CreateNounishProfileResponse = {
 }
 
 export const QUERY_GET_PROPOSALS = `query { nounsProposalIndex(last:1000) {edges { node { 
+  id
   abstainVotes
   againstVotes
   calldatas

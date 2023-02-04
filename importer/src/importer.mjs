@@ -3,20 +3,45 @@ import { getPropHouse } from "./SourcePropHouse.mjs"
 import { getSnapshot } from "./SourceSnapshot.mjs"
 import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
 // import { NounsDataClient } from "nounsdata/dist/NounsDataClient.js"
-// import { URL_THEGRAPH_NOUNS } from "./secrets.mjs"
+
+import { URL_THEGRAPH_NOUNS } from "./secrets.mjs"
+import { QUERY_THEGRAPH_NOUNS_PROPOSALS, CACHED_QUERY_NOUNS_PROPOSALS_RESPONSE } from "./queries.mjs"
+
+
+// TODO: 1. fix daoName and createdTimestamp (done)
+// 1.5 When getting ceramic proposals need to pass daoName
+// 2. Implement big Nouns
+// 3. implement votes
+
 
 import { URL_THEGRAPH_LILNOUNS, QUERY_THEGRAPH_LILNOUNS_PROPOSALS, THEGRAPH_CERAMIC_KEY_MAP, TODO_REQUIRED_KEYS, INT_TYPES, IGNORE_FIELDS } from "./queries.mjs"
+import { postGraphQl } from "./queries.mjs"
 
 import fetch from 'cross-fetch'
 
-const getTheGraphProposals = async () => {
-    const response = await fetch(URL_THEGRAPH_LILNOUNS, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({query: QUERY_THEGRAPH_LILNOUNS_PROPOSALS})
-      })
-    const json =  await response.json()
-    return json //return json['data']['proposal']  
+
+
+
+
+const ARGS_DRY_RUN = true
+const MODELS = [
+    /*{
+      DAO_NAME: 'Lil Nouns',
+      SOURCE_URL: URL_THEGRAPH_LILNOUNS,
+      SOURCE_QUERY: QUERY_THEGRAPH_LILNOUNS_PROPOSALS
+    },*/
+    {
+      DAO_NAME: 'Nouns',
+      SOURCE_URL: URL_THEGRAPH_NOUNS,
+      SOURCE_QUERY: QUERY_THEGRAPH_NOUNS_PROPOSALS
+    }
+]
+
+
+
+
+const getTheGraphProposals = async() => {
+  return postGraphQl(URL_THEGRAPH_LILNOUNS, QUERY_THEGRAPH_LILNOUNS_PROPOSALS)
 }
 
 const getCeramicProposals = (ceramicResponse) => {
@@ -32,12 +57,10 @@ const getCeramicProposals = (ceramicResponse) => {
 }
 
 
-// 'Internal Server Error': {"error":"Validation Error: data/description must NOT have more than 4096 characters"} 
-
 // This function is essentially going to become
 // https://github.com/CapyLabs/eventspy/blob/main/GetEvents.py#L40
 const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
-  console.log('full thegraph_proposal: \n%s\n\n', thegraph_proposal)
+  // console.log('full thegraph_proposal: \n%s\n\n', thegraph_proposal)
 
   let ceramic_proposal = {}
   for (var [key, value] of Object.entries(thegraph_proposal)) {
@@ -56,19 +79,17 @@ const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
 
     ceramic_proposal[key] = value
   }
-  
-  /*if (!('quorumCoefficient' in thegraph_proposal)) {
-    ceramic_proposal['quorumCoefficient'] = 0
-  }*/
+
+  // TODO: Fix model to not include these
   for (var [key, value] of Object.entries(TODO_REQUIRED_KEYS)) {
     ceramic_proposal[key] = value
   }
 
-
   const proposer = thegraph_proposal['proposer']['id']
   ceramic_proposal['proposer'] = proposer
   ceramic_proposal['description'] = ceramic_proposal['description'].substring(0, 20000)
- 
+  //ceramic_proposal['daoName'] = 'Lil Nouns'
+
   return ceramic_proposal
 }
 
@@ -89,13 +110,21 @@ const buildProposalIdToCeramicIdMap = (ceramicProposals) => {
   return map_proposal_id_to_ceramic_id;
 }
 
-const ARGS_DRY_RUN = false
-
-const start = async () => {
+const start = async (daoName, sourceUrl, sourceQuery) => {
   const client = new NounsDataClient()
   await client.authenticate("bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688")
 
-  const thegraphResponse = await getTheGraphProposals()
+  var thegraphResponse
+
+  if (!ARGS_DRY_RUN) {
+    try{
+    var thegraphResponse = await postGraphQl(sourceUrl, sourceQuery) // await getTheGraphProposals()
+    console.log('RESPONSE:\n\n' + JSON.stringify(thegraphResponse) + '\n\n\n')
+    } catch (e) { console.log(JSON.stringify(e))}
+  } else {
+    thegraphResponse = CACHED_QUERY_NOUNS_PROPOSALS_RESPONSE
+  }
+
   const thegraphProposals = thegraphResponse['data']['proposals']
 
   const ceramicResponse = await client.getCeramicProposals()
@@ -109,6 +138,11 @@ const start = async () => {
 
   for (const thegraphProposal of thegraphProposals) {
 
+    var thegraph_proposal_ceramic_format = theGraphProposalToCeramicProposal(thegraphProposal)
+    delete thegraph_proposal_ceramic_format['undefined']
+    thegraph_proposal_ceramic_format['daoName'] = daoName
+
+
     // TODO This is for testing    
     if (thegraphProposal['id'] != '93') {
       continue
@@ -116,13 +150,8 @@ const start = async () => {
 
     if (!already_uploaded_proposal_ids.includes(thegraphProposal['id'])) {
       console.log('Create new ceramic Proposal id ' + thegraphProposal['id'])
-
-      var thegraph_proposal_ceramic_format = theGraphProposalToCeramicProposal(thegraphProposal)
-      delete thegraph_proposal_ceramic_format['undefined']
-
       console.log('writeProposal:\n\n' + JSON.stringify(thegraph_proposal_ceramic_format))
       
-
       try {
         var response = {}
         if (!ARGS_DRY_RUN) {
@@ -132,11 +161,10 @@ const start = async () => {
       } catch (e) {
         console.log('ceramic writeProposal exception ' + e)
       }
-
     } else {
       const ceramic_id = map_proposal_id_to_ceramic_id[thegraphProposal['id']]
       
-      const upsertData = theGraphProposalToCeramicProposal(thegraphProposal)
+      const upsertData = thegraph_proposal_ceramic_format
       console.log('Update ceramic id ' + ceramic_id + ' with thegraph id ' + thegraphProposal['id'] )
     
       try {
@@ -152,4 +180,11 @@ const start = async () => {
   }
 }
 
-start() 
+for (const model of MODELS) {
+  console.log('Start %s\n', model['DAO_NAME'])
+  start(model['DAO_NAME'], model['SOURCE_URL'], model['SOURCE_QUERY'])
+}
+
+// start() 
+
+
