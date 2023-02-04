@@ -113,16 +113,27 @@ export class NounsDataClient {
       mutation UpdateNounsProposal($proposal: UpdateNounsProposalInput!) {
         updateNounsProposal(input: $proposal) {
           document{ 
-            blocknumber
-            created_timestamp
-            proposal_id
-            state
-            votes_for
-            votes_against
-            votes_abstain
+            abstainVotes
+            againstVotes
+            calldatas
+            createdBlock
+            createdTimestamp
+            createdTransaction
             description
-            total_votes
+            endBlock
+            forVotes
+            proposal_id
+            proposalThreshold
             proposer
+            quorumCoefficient
+            quorumVotes
+            signatures
+            startBlock
+            status
+            targets
+            totalSupply
+            values
+            daoName
           }
         }
       }`
@@ -151,6 +162,35 @@ export class NounsDataClient {
       )
   }
 
+
+/*
+  abstainVotes: Int! @int(min: 0)
+  againstVotes: Int! @int(min: 0)
+  calldatas: [String]! @string(maxLength:1000) @list(maxLength: 256)
+  createdBlock: Int! @int(min: 0)
+  createdTimestamp: Int! @int(min: 0)
+  createdTransaction: Int! @int(min: 0)
+  description: String @string(maxLength:20000)
+  endBlock: Int! @int(min: 0)
+  executionETA: Int @int(min: 0)
+  forVotes: Int! @int(min: 0)
+  proposal_id: Int! @int(min: 0)
+  maxQuorumVotesBPS: Int @int(min: 0)
+  minQuorumVotesBPS: Int @int(min: 0)
+  proposalThreshold: Int! @int(min: 0)
+  proposer: String! @string(maxLength:256)
+  quorumCoefficient: Int! @int(min: 0)
+  quorumVotes: Int! @int(min: 0)
+  signatures: [String]! @string(maxLength:1000) @list(maxLength: 256)
+  startBlock: Int! @int(min: 0)
+  status: String! @string(maxLength: 256)
+  targets: [String]! @string(maxLength:1000) @list(maxLength: 256)
+  totalSupply: Int! @int(min: 0)
+  values: [String]! @string(maxLength:1000) @list(maxLength: 256)
+  daoName: String! @string(maxLength:1000)
+  createdTransactionHash: String @string(maxLength:256)
+*/
+
   public async writeProposal(proposal: any): Promise<any> {
     if (!this.isAuthenticated()) {
       return new Promise((resolve, reject) => {
@@ -162,27 +202,27 @@ export class NounsDataClient {
     mutation CreateNounsProposal($proposal: CreateNounsProposalInput!) {
       createNounsProposal(input: $proposal) {
           document {
-            blocknumber
-            created_timestamp
-            proposal_id
-            total_votes
-            votes_for
-            votes_against
-            votes_abstain
+            abstainVotes
+            againstVotes
+            calldatas
+            createdBlock
+            createdTimestamp
+            createdTransaction
             description
-            state
-            start_block
-            end_block
-            distinct_voters_against
-            distinct_votes_abstain
-            total_distinct_voters
-            distinct_voters_for
-            transactionhash
-            quorum_required
-            unique_holders
-            total_supply
-            total_votes
+            endBlock
+            forVotes
+            proposal_id
+            proposalThreshold
             proposer
+            quorumCoefficient
+            quorumVotes
+            signatures
+            startBlock
+            status
+            targets
+            totalSupply
+            values
+            daoName
           }
         }
     }`

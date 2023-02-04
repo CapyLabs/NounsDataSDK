@@ -5,70 +5,15 @@ import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
 // import { NounsDataClient } from "nounsdata/dist/NounsDataClient.js"
 // import { URL_THEGRAPH_NOUNS } from "./secrets.mjs"
 
+import { URL_THEGRAPH_LILNOUNS, QUERY_THEGRAPH_LILNOUNS_PROPOSALS, THEGRAPH_CERAMIC_KEY_MAP, TODO_REQUIRED_KEYS, INT_TYPES, IGNORE_FIELDS } from "./queries.mjs"
+
 import fetch from 'cross-fetch'
-
-const URL_THEGRAPH_LILNOUNS = "https://api.thegraph.com/subgraphs/name/lilnounsdao/lil-nouns-subgraph"
-
-const QUERY_PROPOSALS = `{
-  proposals(orderBy: createdTimestamp, orderDirection: desc) {
-    id
-    description
-    status
-    createdTimestamp
-    abstainVotes
-    againstVotes
-    forVotes
-    proposer {
-      id
-    }
-    createdBlock
-    endBlock
-    startBlock
-  }
-}`
-
-const THEGRAPH_CERAMIC_KEY_MAP = {
-  "createdBlock": "blocknumber",
-  "createdTimestamp": "created_timestamp",
-  "id": "proposal_id",
-  "status": "state",
-  "forVotes": "votes_for",
-  "againstVotes": "votes_against",
-  "abstainVotes": "votes_abstain",
-  "description": "description",
-  "startBlock": "start_block",
-  "endBlock": "end_block",
-}
-
-const TODO_REQUIRED_KEYS = {
-  "distinct_voters_against": 0,
-  "distinct_votes_abstain": 0,
-  "total_distinct_voters": 0,
-  "distinct_voters_for": 0,
-  "transactionhash": "",
-  "quorum_required": 0,
-  "unique_holders": 0,
-  "total_supply": 0,
-  "total_votes": 0,
-  "proposer": '0x0', // TODO: This one is important to implement, u can parse the nested field
-}
-
-const INT_TYPES = [
-  "votes_for",
-  "blocknumber",
-  "proposal_id",
-  "start_block",
-  "end_block",
-  "votes_abstain",
-  "votes_against",
-  "created_timestamp"
-]
 
 const getTheGraphProposals = async () => {
     const response = await fetch(URL_THEGRAPH_LILNOUNS, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({query: QUERY_PROPOSALS})
+        body: JSON.stringify({query: QUERY_THEGRAPH_LILNOUNS_PROPOSALS})
       })
     const json =  await response.json()
     return json //return json['data']['proposal']  
@@ -76,6 +21,7 @@ const getTheGraphProposals = async () => {
 
 const getCeramicProposals = (ceramicResponse) => {
   var proposals = []
+  console.log('ceramicResponse: %s', JSON.stringify(ceramicResponse))
   const ceramicProposals = ceramicResponse['data']['nounsProposalIndex']['edges']
   ceramicProposals.forEach((proposal) => {
     var proposal = proposal['node']
@@ -91,27 +37,38 @@ const getCeramicProposals = (ceramicResponse) => {
 // This function is essentially going to become
 // https://github.com/CapyLabs/eventspy/blob/main/GetEvents.py#L40
 const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
+  console.log('full thegraph_proposal: \n%s\n\n', thegraph_proposal)
+
   let ceramic_proposal = {}
   for (var [key, value] of Object.entries(thegraph_proposal)) {
-    if (key == undefined) {
-      continue
-    }
-    if (!(key in THEGRAPH_CERAMIC_KEY_MAP)) {
-      continue
-    }
-    if (INT_TYPES.includes(THEGRAPH_CERAMIC_KEY_MAP[key])) {
-      value = parseInt(value)
-      console.log('int type ' + THEGRAPH_CERAMIC_KEY_MAP[key] )
-    }
-    ceramic_proposal[THEGRAPH_CERAMIC_KEY_MAP[key]] = value
-  }
-  for (const [key, value] of Object.entries(TODO_REQUIRED_KEYS)) {
-    if (THEGRAPH_CERAMIC_KEY_MAP[key] in INT_TYPES) {
+    
+    if (INT_TYPES.includes(key)) {
       value = parseInt(value)
     }
+
+    if (IGNORE_FIELDS.includes(key)) {
+      continue
+    }
+
+    if (key == 'id') {
+      key = 'proposal_id'
+    }
+
     ceramic_proposal[key] = value
   }
-  ceramic_proposal['description'] = ceramic_proposal['description'].substring(0, 4090)
+  
+  /*if (!('quorumCoefficient' in thegraph_proposal)) {
+    ceramic_proposal['quorumCoefficient'] = 0
+  }*/
+  for (var [key, value] of Object.entries(TODO_REQUIRED_KEYS)) {
+    ceramic_proposal[key] = value
+  }
+
+
+  const proposer = thegraph_proposal['proposer']['id']
+  ceramic_proposal['proposer'] = proposer
+  ceramic_proposal['description'] = ceramic_proposal['description'].substring(0, 20000)
+ 
   return ceramic_proposal
 }
 
@@ -132,6 +89,8 @@ const buildProposalIdToCeramicIdMap = (ceramicProposals) => {
   return map_proposal_id_to_ceramic_id;
 }
 
+const ARGS_DRY_RUN = false
+
 const start = async () => {
   const client = new NounsDataClient()
   await client.authenticate("bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688")
@@ -142,15 +101,18 @@ const start = async () => {
   const ceramicResponse = await client.getCeramicProposals()
   const ceramicProposals = getCeramicProposals(ceramicResponse)
 
+  console.log('Loaded %d groundtruth items', thegraphProposals.length)
+  console.log('Loaded %d ceramic items', ceramicProposals.length)
+
   const map_proposal_id_to_ceramic_id = buildProposalIdToCeramicIdMap(ceramicProposals)
   const already_uploaded_proposal_ids = Object.keys(map_proposal_id_to_ceramic_id)
 
   for (const thegraphProposal of thegraphProposals) {
 
     // TODO This is for testing    
-    /*if (thegraphProposal['id'] != '93') {
+    if (thegraphProposal['id'] != '93') {
       continue
-    }*/
+    }
 
     if (!already_uploaded_proposal_ids.includes(thegraphProposal['id'])) {
       console.log('Create new ceramic Proposal id ' + thegraphProposal['id'])
@@ -158,11 +120,14 @@ const start = async () => {
       var thegraph_proposal_ceramic_format = theGraphProposalToCeramicProposal(thegraphProposal)
       delete thegraph_proposal_ceramic_format['undefined']
 
-      console.log('writeProposal(' + JSON.stringify(thegraph_proposal_ceramic_format))
+      console.log('writeProposal:\n\n' + JSON.stringify(thegraph_proposal_ceramic_format))
       
 
       try {
-        const response = await client.writeProposal(thegraph_proposal_ceramic_format)
+        var response = {}
+        if (!ARGS_DRY_RUN) {
+          response = await client.writeProposal(thegraph_proposal_ceramic_format)
+        }
         console.log('ceramic writeProposal response ' + JSON.stringify(response))
       } catch (e) {
         console.log('ceramic writeProposal exception ' + e)
@@ -175,7 +140,10 @@ const start = async () => {
       console.log('Update ceramic id ' + ceramic_id + ' with thegraph id ' + thegraphProposal['id'] )
     
       try {
-        const response = await client.upsertProposal(ceramic_id, upsertData)
+        var response = {}
+        if (!ARGS_DRY_RUN) {
+          response = await client.upsertProposal(ceramic_id, upsertData)
+        }
         console.log('response: ' + JSON.stringify(response))
       } catch (e) {
         console.log('exception: ' + e)

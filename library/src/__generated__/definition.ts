@@ -1,39 +1,19 @@
 export const definition = {
   "models": {
-    "NounsProposal": {
-      "id": "kjzl6hvfrbw6c8sde0sbybhp8z3s500ru1c4ifawovkqxet5h77gjyybu1567uj",
-      "accountRelation": { "type": "list" }
-    },
     "NounishProfile": {
       "id": "kjzl6hvfrbw6ca02lpn94dtzq5tn7vge0t9ayomihoba1ax0erj2xgun2j8qmo6",
       "accountRelation": { "type": "single" }
+    },
+    "NounsProposal": {
+      "id": "kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2",
+      "accountRelation": { "type": "list" }
+    },
+    "NounsProposalVote": {
+      "id": "kjzl6hvfrbw6c6dmc8dbqgj4wvjqlfh1cha44nmwqqukde9mh5wswtsk6vi3gf2",
+      "accountRelation": { "type": "list" }
     }
   },
   "objects": {
-    "NounsProposal": {
-      "ens": { "type": "string", "required": false },
-      "state": { "type": "string", "required": true },
-      "proposer": { "type": "string", "required": true },
-      "end_block": { "type": "integer", "required": true },
-      "votes_for": { "type": "integer", "required": true },
-      "blocknumber": { "type": "integer", "required": true },
-      "description": { "type": "string", "required": true },
-      "proposal_id": { "type": "integer", "required": true },
-      "start_block": { "type": "integer", "required": true },
-      "total_votes": { "type": "integer", "required": true },
-      "total_supply": { "type": "integer", "required": true },
-      "requested_eth": { "type": "integer", "required": false },
-      "votes_abstain": { "type": "integer", "required": true },
-      "votes_against": { "type": "integer", "required": true },
-      "unique_holders": { "type": "integer", "required": true },
-      "quorum_required": { "type": "integer", "required": true },
-      "transactionhash": { "type": "string", "required": true },
-      "created_timestamp": { "type": "integer", "required": true },
-      "distinct_voters_for": { "type": "integer", "required": true },
-      "total_distinct_voters": { "type": "integer", "required": true },
-      "distinct_votes_abstain": { "type": "integer", "required": true },
-      "distinct_voters_against": { "type": "integer", "required": true }
-    },
     "NounishProfile": {
       "time_zone": { "type": "string", "required": false },
       "eth_address": { "type": "string", "required": true },
@@ -42,11 +22,78 @@ export const definition = {
       "discourse_username": { "type": "string", "required": false },
       "farcaster_username": { "type": "string", "required": false },
       "proposal_category_preference": { "type": "string", "required": false }
+    },
+    "NounsProposal": {
+      "status": { "type": "string", "required": true },
+      "values": {
+        "type": "list",
+        "required": true,
+        "item": { "type": "string", "required": true }
+      },
+      "daoName": { "type": "string", "required": true },
+      "targets": {
+        "type": "list",
+        "required": true,
+        "item": { "type": "string", "required": true }
+      },
+      "endBlock": { "type": "integer", "required": true },
+      "forVotes": { "type": "integer", "required": true },
+      "proposer": { "type": "string", "required": true },
+      "calldatas": {
+        "type": "list",
+        "required": true,
+        "item": { "type": "string", "required": true }
+      },
+      "signatures": {
+        "type": "list",
+        "required": true,
+        "item": { "type": "string", "required": true }
+      },
+      "startBlock": { "type": "integer", "required": true },
+      "description": { "type": "string", "required": false },
+      "proposal_id": { "type": "integer", "required": true },
+      "quorumVotes": { "type": "integer", "required": true },
+      "totalSupply": { "type": "integer", "required": true },
+      "abstainVotes": { "type": "integer", "required": true },
+      "againstVotes": { "type": "integer", "required": true },
+      "createdBlock": { "type": "integer", "required": true },
+      "executionETA": { "type": "integer", "required": false },
+      "createdTimestamp": { "type": "integer", "required": true },
+      "maxQuorumVotesBPS": { "type": "integer", "required": false },
+      "minQuorumVotesBPS": { "type": "integer", "required": false },
+      "proposalThreshold": { "type": "integer", "required": true },
+      "quorumCoefficient": { "type": "integer", "required": true },
+      "createdTransaction": { "type": "integer", "required": true },
+      "createdTransactionHash": { "type": "string", "required": false }
+    },
+    "NounsProposalVote": {
+      "votes": { "type": "integer", "required": true },
+      "reason": { "type": "string", "required": false },
+      "support": { "type": "boolean", "required": true },
+      "vote_id": { "type": "string", "required": true },
+      "votesRaw": { "type": "integer", "required": true },
+      "blocknumber": { "type": "integer", "required": true },
+      "eth_address": { "type": "string", "required": true },
+      "supportDetailed": { "type": "integer", "required": true },
+      "proposal_stream_id": { "type": "streamid", "required": true },
+      "nouns_proposal": {
+        "type": "view",
+        "viewType": "relation",
+        "relation": {
+          "source": "document",
+          "model": "kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2",
+          "property": "proposal_stream_id"
+        }
+      }
     }
   },
   "enums": {},
   "accountData": {
+    "nounishProfile": { "type": "node", "name": "NounishProfile" },
     "nounsProposalList": { "type": "connection", "name": "NounsProposal" },
-    "nounishProfile": { "type": "node", "name": "NounishProfile" }
+    "nounsProposalVoteList": {
+      "type": "connection",
+      "name": "NounsProposalVote"
+    }
   }
 }
