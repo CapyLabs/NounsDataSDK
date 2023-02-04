@@ -32,13 +32,35 @@ export type CreateNounishProfileResponse = {
   }
 }
 
-export const QUERY_GET_PROPOSALS =
-  `query { nounsProposalIndex(last:1000) {edges { node { 
-    id 
-      blocknumber
-      proposal_id
-      state
-  } }} }`
+export const QUERY_GET_PROPOSALS = `query { nounsProposalIndex(last:1000) {edges { node { 
+  id
+  abstainVotes
+  againstVotes
+  calldatas
+  createdBlock
+  createdTimestamp
+  createdTransaction
+  description
+  endBlock
+  executionETA
+  forVotes
+  proposal_id
+  maxQuorumVotesBPS
+  minQuorumVotesBPS
+  proposalThreshold
+  proposer
+  quorumCoefficient
+  quorumVotes
+  signatures
+  startBlock
+  status
+  targets
+  totalSupply
+  values
+  daoName
+  createdTransactionHash
+}}}}`
+
 
 export const QUERY_WRITE_NOUNISH_PROFILE =
   `TODO`
