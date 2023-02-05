@@ -7,13 +7,6 @@ import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
 import { URL_THEGRAPH_NOUNS } from "./secrets.mjs"
 import { QUERY_THEGRAPH_NOUNS_PROPOSALS, CACHED_QUERY_NOUNS_PROPOSALS_RESPONSE } from "./queries.mjs"
 
-
-// TODO: 1. fix daoName and createdTimestamp (done)
-// 1.5 When getting ceramic proposals need to pass daoName (done)
-// 2. Implement big Nouns (done)
-// 3. implement votes
-
-
 import { URL_THEGRAPH_LILNOUNS, QUERY_THEGRAPH_LILNOUNS_PROPOSALS, THEGRAPH_CERAMIC_KEY_MAP, TODO_REQUIRED_KEYS, INT_TYPES, IGNORE_FIELDS } from "./queries.mjs"
 import { postGraphQl } from "./queries.mjs"
 
@@ -21,20 +14,18 @@ import fetch from 'cross-fetch'
 
 
 
-
-
 const ARGS_DRY_RUN = false
 const MODELS = [
-    /*{
+    {
       DAO_NAME: 'Lil Nouns',
       SOURCE_URL: URL_THEGRAPH_LILNOUNS,
       SOURCE_QUERY: QUERY_THEGRAPH_LILNOUNS_PROPOSALS
-    },*/
+    },/*
     {
       DAO_NAME: 'Nouns',
       SOURCE_URL: URL_THEGRAPH_NOUNS,
       SOURCE_QUERY: QUERY_THEGRAPH_NOUNS_PROPOSALS
-    }
+    }*/
 ]
 
 
@@ -96,6 +87,27 @@ const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
   return ceramic_proposal
 }
 
+const theGraphProposalToCeramicVotes = (thegraph_proposal, proposal_ceramic_id) => {
+  let votes = []
+
+  const real_votes = ceramic_proposal['votes']
+  for (const real_vote of real_votes) {
+    const vote_theGraph_format = {
+      'proposal_stream_id': proposal_ceramic_id, // TODO: Is this how writing model with mutation works?
+      'eth_address': real_vote['voter']['id'],
+      'blocknumber': real_vote['blockNumber'],
+      'vote_id': real_vote['id'],
+      'reason': real_vote['reason'],
+      'support': real_vote['support'],
+      'supportDetailed': real_vote['supportDetailed'],
+      'votes': parseInt(real_vote['votes']),
+      'votesRaw': parseInt(real_vote['votesRaw'])
+    }
+    votes.push(vote_theGraph_format)
+  }
+  return votes
+}
+
 const ceramicProposalsEqual = (a, b) => {
   for (const [key, value] of Object.entries(THEGRAPH_CERAMIC_KEY_MAP)) {
     if (a[value] + "" != b[value] + "") {
@@ -154,12 +166,17 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
     if (!already_uploaded_proposal_ids.includes(thegraphProposal['id'])) {
       console.log('Create new ceramic Proposal id ' + thegraphProposal['id'])
       console.log('writeProposal:\n\n' + JSON.stringify(thegraph_proposal_ceramic_format))
-      
+
       try {
         var response = {}
         if (!ARGS_DRY_RUN) {
           response = await client.writeProposal(thegraph_proposal_ceramic_format)
         }
+
+        // The writeProposal response does not include the created proposal
+        // ceramic id which is necessary to write the ProposalVotes.
+        // So either way we need a seperate call to figure out
+        // the proposal ceramic ids before the votes can be added.
         console.log('ceramic writeProposal response ' + JSON.stringify(response))
       } catch (e) {
         console.log('ceramic writeProposal exception ' + e)
@@ -179,6 +196,30 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
       } catch (e) {
         console.log('exception: ' + e)
       }
+
+      const ceramicFormatVotes = theGraphProposalToCeramicVotes(thegraphProposal, proposal_stream_id)
+      console.log('ceramic format votes: %s', JSON.stringify(ceramicFormatVotes))
+
+
+      // Write proposal votes approaches.
+
+      // TODO: This needs to be tested and to not write votes twice
+      // Approach 1
+      // 1. Get ceramic existing votes (this likely needs to be paginated because u can only get 1000 at a time)
+      // 2. Get maximum blocknumber
+      // 3. Here write any votes with a higher blocknumber  
+
+      // Approach 2
+      // 1. Fix proposal model so we can query associated proposal votes https://composedb.js.org/docs/preview/guides/creating-composites/directives#relationfrom
+      // 2. Ignore the ones already written to ceramic
+      // 3. Write the ones not in ceramic
+
+      /*
+      for (const ceramicFormatVote of ceramicFormatVotes) {
+        await client.writeProposalVote(ceramicFormatVote)
+      }*/
+
+      return
     }
   }
 }
