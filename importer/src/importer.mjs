@@ -9,8 +9,8 @@ import { QUERY_THEGRAPH_NOUNS_PROPOSALS, CACHED_QUERY_NOUNS_PROPOSALS_RESPONSE }
 
 
 // TODO: 1. fix daoName and createdTimestamp (done)
-// 1.5 When getting ceramic proposals need to pass daoName
-// 2. Implement big Nouns
+// 1.5 When getting ceramic proposals need to pass daoName (done)
+// 2. Implement big Nouns (done)
 // 3. implement votes
 
 
@@ -23,7 +23,7 @@ import fetch from 'cross-fetch'
 
 
 
-const ARGS_DRY_RUN = true
+const ARGS_DRY_RUN = false
 const MODELS = [
     /*{
       DAO_NAME: 'Lil Nouns',
@@ -44,14 +44,18 @@ const getTheGraphProposals = async() => {
   return postGraphQl(URL_THEGRAPH_LILNOUNS, QUERY_THEGRAPH_LILNOUNS_PROPOSALS)
 }
 
-const getCeramicProposals = (ceramicResponse) => {
+// Sometimes we want to filter by field value e.g. where: daoName=Nouns
+// but ceramic does not support this https://forum.ceramic.network/t/is-there-a-way-to-query-list-by-specific-field/776
+// So do it manual;y
+const getCeramicProposals = (ceramicResponse, daoName) => {
   var proposals = []
   console.log('ceramicResponse: %s', JSON.stringify(ceramicResponse))
   const ceramicProposals = ceramicResponse['data']['nounsProposalIndex']['edges']
   ceramicProposals.forEach((proposal) => {
     var proposal = proposal['node']
-    proposals.push(proposal)
-
+    if (daoName != "" && proposal['daoName'] == daoName) {
+      proposals.push(proposal)
+    }
   })
   return proposals;
 }
@@ -88,7 +92,6 @@ const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
   const proposer = thegraph_proposal['proposer']['id']
   ceramic_proposal['proposer'] = proposer
   ceramic_proposal['description'] = ceramic_proposal['description'].substring(0, 20000)
-  //ceramic_proposal['daoName'] = 'Lil Nouns'
 
   return ceramic_proposal
 }
@@ -128,7 +131,7 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
   const thegraphProposals = thegraphResponse['data']['proposals']
 
   const ceramicResponse = await client.getCeramicProposals()
-  const ceramicProposals = getCeramicProposals(ceramicResponse)
+  const ceramicProposals = getCeramicProposals(ceramicResponse, daoName)
 
   console.log('Loaded %d groundtruth items', thegraphProposals.length)
   console.log('Loaded %d ceramic items', ceramicProposals.length)
@@ -144,9 +147,9 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
 
 
     // TODO This is for testing    
-    if (thegraphProposal['id'] != '93') {
+    /*if (thegraphProposal['id'] != '93') {
       continue
-    }
+    }*/
 
     if (!already_uploaded_proposal_ids.includes(thegraphProposal['id'])) {
       console.log('Create new ceramic Proposal id ' + thegraphProposal['id'])

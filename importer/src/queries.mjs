@@ -110,7 +110,8 @@ export const TODO_REQUIRED_KEYS = {
   "quorumCoefficient": 0,
   "proposalThreshold": 0,
   "createdTransaction": 0,
-  "totalSupply": 0  
+  "totalSupply": 0,
+  "executionETA": 0
 }
 
 export const INT_TYPES = [
