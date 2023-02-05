@@ -204,15 +204,14 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
       // Write proposal votes approaches.
 
       // TODO: This needs to be tested and to not write votes twice
-      // Approach 1
-      // 1. Get ceramic existing votes (this likely needs to be paginated because u can only get 1000 at a time)
-      // 2. Get maximum blocknumber
-      // 3. Here write any votes with a higher blocknumber  
+      // We need to get the votes already written to ceramic
 
-      // Approach 2
-      // 1. Fix proposal model so we can query associated proposal votes https://composedb.js.org/docs/preview/guides/creating-composites/directives#relationfrom
-      // 2. Ignore the ones already written to ceramic
-      // 3. Write the ones not in ceramic
+      // Big nouns will likely have more than 1000 votes and ceramic only
+      // lets you query 1000 at a time, so we need to paginate to make sure
+      // we get all the written votes
+
+      // Or Fix proposal model so we can query associated proposal votes 
+      // https://composedb.js.org/docs/preview/guides/creating-composites/directives#relationfrom
 
       /*
       for (const ceramicFormatVote of ceramicFormatVotes) {
