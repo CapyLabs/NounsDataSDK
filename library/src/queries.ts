@@ -61,6 +61,19 @@ export const QUERY_GET_PROPOSALS = `query { nounsProposalIndex(last:1000) {edges
   createdTransactionHash
 }}}}`
 
+export const QUERY_GET_PROPOSAL_VOTES = `
+query { nounsProposalVoteIndex(last: 1000) {edges { node {
+  id
+  eth_address
+  blocknumber
+  vote_id
+  reason
+  support
+  supportDetailed
+  votes
+  votesRaw
+}}}}`
+
 
 export const QUERY_WRITE_NOUNISH_PROFILE =
   `TODO`
