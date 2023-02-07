@@ -234,9 +234,11 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
 
 // Prophouse
 const importPropHouse = async () => {
-  const data = await postGraphQl(URL_PROPHOUSE, QUERY_PROPHOUSE_PROPOSALS)
+  const client = new NounsDataClient()
+  await client.authenticate("bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688")
 
-  // console.log(JSON.stringify(data))
+
+  const data = await postGraphQl(URL_PROPHOUSE, QUERY_PROPHOUSE_PROPOSALS)
 
   const communities = data['data']['communities']
   for (const community of communities) {
@@ -246,6 +248,12 @@ const importPropHouse = async () => {
       }
     }
   }
+
+
+  var ceramicPropHouseProposals = await client.getCeramicProphouseProposals()
+  ceramicPropHouseProposals = ceramicPropHouseProposals['data']['prophouseProposalIndex']['edges']
+  console.log('Loaded %d ceramic prophouse proposals', ceramicPropHouseProposals.length)
+
 }
 await importPropHouse()
 

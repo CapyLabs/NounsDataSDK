@@ -35,6 +35,7 @@ type ProphouseProposal @createModel(accountRelation: LIST, description: "Prophou
 export const QUERY_GET_PROPHOUSE_PROPOSALS = `
   query {
     prophouseProposalIndex(last: 1000) { edges { node {
+      id
       proposal_id
       contractAddress
       title
