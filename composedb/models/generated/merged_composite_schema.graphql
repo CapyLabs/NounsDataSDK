@@ -438,7 +438,31 @@ type UpdateNounishProfilePayload {
 input UpdateNounishProfileInput {
   id: ID!
   content: PartialNounishProfileInput!
+  options: UpdateOptionsInput
+  clientMutationId: String
+}
 
+input PartialNounishProfileInput {
+  time_zone: String
+  eth_address: String
+  discord_username: String
+  twitter_username: String
+  discourse_username: String
+  farcaster_username: String
+  proposal_category_preference: String
+}
+
+input UpdateOptionsInput {
+  """
+  Fully replace the document contents instead of performing a shallow merge
+  """
+  replace: Boolean = false
+
+  """Only perform mutation if the document matches the provided version"""
+  version: CeramicCommitID
+}
+
+"""A Ceramic Commit ID"""
 scalar CeramicCommitID
 
 type CreateNounsProposalPayload {
@@ -598,7 +622,13 @@ input PartialNounsProposalVoteInput {
 }
 
 type CreateProphouseCommunityPayload {
-  """Fetches an object given 
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
   viewer: CeramicAccount
   document: ProphouseCommunity!
   clientMutationId: String
