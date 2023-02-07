@@ -16,6 +16,35 @@ export const QUERY_GET_VIEWER_NOUNISH_PROFILE =
     }
   }`
 
+
+
+
+/*
+type ProphouseProposal @createModel(accountRelation: LIST, description: "Prophouse proposals") {
+
+  proposal_id: Int! @int(min: 0)
+  contractAddress: String! @string(maxLength:2048)
+
+  title: String! @string(maxLength:2048)
+  what: String! @string(maxLength:20000)
+  tldr: String! @string(maxLength:20000)
+
+  voteCount: Int! @int(min: 0)
+}
+*/
+export const QUERY_GET_PROPHOUSE_PROPOSALS = `
+  query {
+    prophouseProposalIndex(last: 1000) { edges { node {
+      proposal_id
+      contractAddress
+      title
+      what
+      tldr
+      voteCount
+    }}}
+  }
+`
+
 export type NounishProfileResponse = {
   data: {
     viewer: {

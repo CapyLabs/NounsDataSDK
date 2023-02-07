@@ -1,0 +1,13 @@
+
+
+
+type ProphouseAuction @createModel(accountRelation: LIST, description: "Prophouse auctions") {
+
+  auction_id: Int! @int(min: 0)
+  startTime: String! @string(maxLength:1024)
+  proposalEndTime: String! @string(maxLength:1024)
+  votingEndTime: String! @string(maxLength:1024)
+
+  title: String! @string(maxLength:2048)
+  description: String! @string(maxLength:20000)
+}

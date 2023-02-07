@@ -6,7 +6,7 @@ import { getResolver } from "key-did-resolver";
 import { fromString } from "uint8arrays/from-string";
 import { type DocumentNode, type ExecutionResult, type Source } from 'graphql';
 
-import { QUERY_GET_VIEWER_NOUNISH_PROFILE, QUERY_GET_PROPOSALS, QUERY_GET_PROPOSAL_VOTES, NounishProfileResponse, CreateNounishProfileResponse } from "./queries.js";
+import { QUERY_GET_VIEWER_NOUNISH_PROFILE, QUERY_GET_PROPOSALS, QUERY_GET_PROPOSAL_VOTES, QUERY_GET_PROPHOUSE_PROPOSALS, NounishProfileResponse, CreateNounishProfileResponse } from "./queries.js";
 import { definition } from "./__generated__/definition.js";
 import { NounishProfile } from "../model/NounishProfile.js"
 
@@ -219,6 +219,58 @@ export class NounsDataClient {
           })
       )
   }
+
+
+  // PROP HOUSE
+  public getCeramicProphouseProposals(): Promise<ExecutionResult<any>> {
+    return this.composeClient.executeQuery(QUERY_GET_PROPHOUSE_PROPOSALS)
+  }
+
+
+  public async writeProphouseProposal(proposal: any): Promise<any> {
+    if (!this.isAuthenticated()) {
+      return new Promise((resolve, reject) => {
+        reject("Must authenticate")
+      })
+    }
+
+    const create_prophouse_proposal_query = `
+    mutation CreateProphouseProposal($proposal: CreateProphouseProposalInput!) {
+      createProphouseProposal(input: $proposal) {
+          document {
+            proposal_id
+            contractAddress
+            title
+            what
+            tldr
+            voteCount
+          }
+        }
+    }`
+
+    const create_prophouse_proposal_variables = {
+      "proposal": {
+        "content": proposal
+      }
+    }
+
+    return this.composeClient.executeQuery(
+      create_prophouse_proposal_query,
+      create_prophouse_proposal_variables)
+      .then(
+        (value) =>
+          new Promise((resolve, reject) => {
+            if (value.errors) {
+              reject(value.errors)
+            } else {
+              const response = value // as CreateNounishProfileResponse
+              resolve(response); //.data.createNounishProfile.document);
+            }
+          })
+      )
+  }
+
+
 
   public getCeramicProposalVotes(): Promise<ExecutionResult<any>> {
     return this.composeClient.executeQuery(QUERY_GET_PROPOSAL_VOTES)

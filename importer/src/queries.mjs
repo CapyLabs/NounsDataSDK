@@ -13,6 +13,36 @@ export const postGraphQl = async (url, query) => {
 }
 
 
+// Prophouse
+export const URL_PROPHOUSE = 'https://prod.backend.prop.house/graphql'
+export const QUERY_PROPHOUSE_PROPOSALS = `
+{
+  communities {
+    id
+    description
+    profileImageUrl
+    auctions {
+      id
+      startTime
+      proposalEndTime
+      votingEndTime
+      title
+      description
+      proposals {
+        id
+        title
+        address
+        voteCount
+        what
+        tldr
+      }
+    }
+  }
+}`
+
+
+// On chain
+
 export const URL_THEGRAPH_LILNOUNS = "https://api.thegraph.com/subgraphs/name/lilnounsdao/lil-nouns-subgraph"
 
 

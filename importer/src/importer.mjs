@@ -8,6 +8,7 @@ import { URL_THEGRAPH_NOUNS } from "./secrets.mjs"
 import { QUERY_THEGRAPH_NOUNS_PROPOSALS, CACHED_QUERY_NOUNS_PROPOSALS_RESPONSE } from "./queries.mjs"
 
 import { URL_THEGRAPH_LILNOUNS, QUERY_THEGRAPH_LILNOUNS_PROPOSALS, THEGRAPH_CERAMIC_KEY_MAP, TODO_REQUIRED_KEYS, INT_TYPES, IGNORE_FIELDS } from "./queries.mjs"
+import { URL_PROPHOUSE, QUERY_PROPHOUSE_PROPOSALS } from "./queries.mjs"
 import { postGraphQl } from "./queries.mjs"
 
 import fetch from 'cross-fetch'
@@ -223,11 +224,30 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
   }
 }
 
-for (const model of MODELS) {
+// On chain proposals from TheGraph
+/*for (const model of MODELS) {
   console.log('Start %s\n', model['DAO_NAME'])
   start(model['DAO_NAME'], model['SOURCE_URL'], model['SOURCE_QUERY'])
-}
+}*/
 
-// start() 
+
+
+// Prophouse
+const importPropHouse = async () => {
+  const data = await postGraphQl(URL_PROPHOUSE, QUERY_PROPHOUSE_PROPOSALS)
+
+  // console.log(JSON.stringify(data))
+
+  const communities = data['data']['communities']
+  for (const community of communities) {
+    for (const auction of community['auctions']) {
+      for (const proposal of auction['proposals']) {
+        console.log('%d %s %s %s', proposal['id'], proposal['address'], proposal['title'], proposal['voteCount'])
+      }
+    }
+  }
+}
+await importPropHouse()
+
 
 

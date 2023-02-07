@@ -1,0 +1,14 @@
+
+
+
+type ProphouseCommunity @createModel(accountRelation: LIST, description: "Prophouse communities") {
+
+  community_id: Int! @int(min: 0)
+
+  profileImageUrl: String! @string(maxLength:2048)
+  description: String! @string(maxLength:20000)
+  contractAddress: String! @string(maxLength:2048)
+
+  createdDate: String! @string(maxLength:1024)
+  lastUpdatedDate: String! @string(maxLength:1024)
+}
