@@ -13,7 +13,7 @@ Deploy composite:
 $ composedb composite:deploy generated/nounish_profile_composite.json -k=$private_key
 ```
 
-Merging composites:
+Merging composite files:
 ```
 $ composedb composite:merge generated/nounish_profile_composite.json generated/other_composite.json --output=generated/merged_composite.json
 ```

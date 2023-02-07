@@ -1,8 +1,7 @@
+# PropHouse proposal composite schema definition. 
+# Deployed on Clay Testnet as kjzl6hvfrbw6c9kjw1icc7nnuyajz9xt1mxt195v9yo5sz6cc7ipnxjakl4yqmk
 
-
-
-type ProphouseProposal @createModel(accountRelation: LIST, description: "Prophouse proposals") {
-
+type ProphouseProposal @createModel(accountRelation: LIST, description: "A PropHouse proposal") {
   proposal_id: Int! @int(min: 0)
   contractAddress: String! @string(maxLength:2048)
 

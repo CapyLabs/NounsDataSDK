@@ -1,7 +1,7 @@
+# PropHouse community composite schema definition. 
+# Deployed on Clay Testnet as kjzl6hvfrbw6c86d6eb7bylc3wzp52pbw0kpzqe6bf2jub8wefteqg6pbefb92e
 
-
-
-type ProphouseCommunity @createModel(accountRelation: LIST, description: "Prophouse communities") {
+type ProphouseCommunity @createModel(accountRelation: LIST, description: "A PropHouse community") {
 
   community_id: Int! @int(min: 0)
 

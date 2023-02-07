@@ -1,7 +1,7 @@
+# PropHouse auction composite schema definition. 
+# Deployed on Clay Testnet as kjzl6hvfrbw6ca3whm1h1hy1fnk3dvssom5e4k2jv8w4hy74hbsamobwq40akj2
 
-
-
-type ProphouseAuction @createModel(accountRelation: LIST, description: "Prophouse auctions") {
+type ProphouseAuction @createModel(accountRelation: LIST, description: "A PropHouse auction") {
 
   auction_id: Int! @int(min: 0)
   startTime: String! @string(maxLength:1024)

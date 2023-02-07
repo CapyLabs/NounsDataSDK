@@ -1,0 +1,760 @@
+type Query {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  nounishProfileIndex(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): NounishProfileConnection
+  nounsProposalIndex(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): NounsProposalConnection
+  nounsProposalVoteIndex(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): NounsProposalVoteConnection
+  prophouseCommunityIndex(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): ProphouseCommunityConnection
+  prophouseAuctionIndex(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): ProphouseAuctionConnection
+  prophouseProposalIndex(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): ProphouseProposalConnection
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+type CeramicAccount implements Node {
+  """Globally unique identifier of the account (DID string)"""
+  id: ID!
+
+  """
+  Whether the Ceramic instance is currently authenticated with this account or not
+  """
+  isViewer: Boolean!
+  nounishProfile: NounishProfile
+  nounsProposalList(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): NounsProposalConnection
+  nounsProposalVoteList(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): NounsProposalVoteConnection
+  prophouseCommunityList(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): ProphouseCommunityConnection
+  prophouseAuctionList(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): ProphouseAuctionConnection
+  prophouseProposalList(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): ProphouseProposalConnection
+}
+
+type NounishProfile implements Node {
+  id: ID!
+  time_zone: String
+  eth_address: String!
+  discord_username: String
+  twitter_username: String
+  discourse_username: String
+  farcaster_username: String
+  proposal_category_preference: String
+}
+
+"""A connection to a list of items."""
+type NounsProposalConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [NounsProposalEdge]
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+"""An edge in a connection."""
+type NounsProposalEdge {
+  """The item at the end of the edge"""
+  node: NounsProposal
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type NounsProposal implements Node {
+  id: ID!
+  status: String!
+  values: [String!]!
+  daoName: String!
+  targets: [String!]!
+  endBlock: Int!
+  forVotes: Int!
+  proposer: String!
+  calldatas: [String!]!
+  signatures: [String!]!
+  startBlock: Int!
+  description: String
+  proposal_id: Int!
+  quorumVotes: Int!
+  totalSupply: Int!
+  abstainVotes: Int!
+  againstVotes: Int!
+  createdBlock: Int!
+  executionETA: Int
+  createdTimestamp: Int!
+  maxQuorumVotesBPS: Int
+  minQuorumVotesBPS: Int
+  proposalThreshold: Int!
+  quorumCoefficient: Int!
+  createdTransaction: Int!
+  createdTransactionHash: String
+}
+
+"""A connection to a list of items."""
+type NounsProposalVoteConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [NounsProposalVoteEdge]
+}
+
+"""An edge in a connection."""
+type NounsProposalVoteEdge {
+  """The item at the end of the edge"""
+  node: NounsProposalVote
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type NounsProposalVote implements Node {
+  id: ID!
+  votes: Int!
+  reason: String
+  support: Boolean!
+  vote_id: String!
+  votesRaw: Int!
+  blocknumber: Int!
+  eth_address: String!
+  supportDetailed: Int!
+  proposal_stream_id: CeramicStreamID!
+  nouns_proposal: NounsProposal
+}
+
+"""A Ceramic Stream ID"""
+scalar CeramicStreamID
+
+"""A connection to a list of items."""
+type ProphouseCommunityConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ProphouseCommunityEdge]
+}
+
+"""An edge in a connection."""
+type ProphouseCommunityEdge {
+  """The item at the end of the edge"""
+  node: ProphouseCommunity
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type ProphouseCommunity implements Node {
+  id: ID!
+  createdDate: String!
+  description: String!
+  community_id: Int!
+  contractAddress: String!
+  lastUpdatedDate: String!
+  profileImageUrl: String!
+}
+
+"""A connection to a list of items."""
+type ProphouseAuctionConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ProphouseAuctionEdge]
+}
+
+"""An edge in a connection."""
+type ProphouseAuctionEdge {
+  """The item at the end of the edge"""
+  node: ProphouseAuction
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type ProphouseAuction implements Node {
+  id: ID!
+  title: String!
+  startTime: String!
+  auction_id: Int!
+  description: String!
+  votingEndTime: String!
+  proposalEndTime: String!
+}
+
+"""A connection to a list of items."""
+type ProphouseProposalConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ProphouseProposalEdge]
+}
+
+"""An edge in a connection."""
+type ProphouseProposalEdge {
+  """The item at the end of the edge"""
+  node: ProphouseProposal
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type ProphouseProposal implements Node {
+  id: ID!
+  tldr: String!
+  what: String!
+  title: String!
+  voteCount: Int!
+  proposal_id: Int!
+  contractAddress: String!
+}
+
+"""A connection to a list of items."""
+type NounishProfileConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [NounishProfileEdge]
+}
+
+"""An edge in a connection."""
+type NounishProfileEdge {
+  """The item at the end of the edge"""
+  node: NounishProfile
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type Mutation {
+  createNounishProfile(input: CreateNounishProfileInput!): CreateNounishProfilePayload
+  updateNounishProfile(input: UpdateNounishProfileInput!): UpdateNounishProfilePayload
+  createNounsProposal(input: CreateNounsProposalInput!): CreateNounsProposalPayload
+  updateNounsProposal(input: UpdateNounsProposalInput!): UpdateNounsProposalPayload
+  createNounsProposalVote(input: CreateNounsProposalVoteInput!): CreateNounsProposalVotePayload
+  updateNounsProposalVote(input: UpdateNounsProposalVoteInput!): UpdateNounsProposalVotePayload
+  createProphouseCommunity(input: CreateProphouseCommunityInput!): CreateProphouseCommunityPayload
+  updateProphouseCommunity(input: UpdateProphouseCommunityInput!): UpdateProphouseCommunityPayload
+  createProphouseAuction(input: CreateProphouseAuctionInput!): CreateProphouseAuctionPayload
+  updateProphouseAuction(input: UpdateProphouseAuctionInput!): UpdateProphouseAuctionPayload
+  createProphouseProposal(input: CreateProphouseProposalInput!): CreateProphouseProposalPayload
+  updateProphouseProposal(input: UpdateProphouseProposalInput!): UpdateProphouseProposalPayload
+}
+
+type CreateNounishProfilePayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: NounishProfile!
+  clientMutationId: String
+}
+
+input CreateNounishProfileInput {
+  content: NounishProfileInput!
+  clientMutationId: String
+}
+
+input NounishProfileInput {
+  time_zone: String
+  eth_address: String!
+  discord_username: String
+  twitter_username: String
+  discourse_username: String
+  farcaster_username: String
+  proposal_category_preference: String
+}
+
+type UpdateNounishProfilePayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: NounishProfile!
+  clientMutationId: String
+}
+
+input UpdateNounishProfileInput {
+  id: ID!
+  content: PartialNounishProfileInput!
+
+scalar CeramicCommitID
+
+type CreateNounsProposalPayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: NounsProposal!
+  clientMutationId: String
+}
+
+input CreateNounsProposalInput {
+  content: NounsProposalInput!
+  clientMutationId: String
+}
+
+input NounsProposalInput {
+  status: String!
+  values: [String]!
+  daoName: String!
+  targets: [String]!
+  endBlock: Int!
+  forVotes: Int!
+  proposer: String!
+  calldatas: [String]!
+  signatures: [String]!
+  startBlock: Int!
+  description: String
+  proposal_id: Int!
+  quorumVotes: Int!
+  totalSupply: Int!
+  abstainVotes: Int!
+  againstVotes: Int!
+  createdBlock: Int!
+  executionETA: Int
+  createdTimestamp: Int!
+  maxQuorumVotesBPS: Int
+  minQuorumVotesBPS: Int
+  proposalThreshold: Int!
+  quorumCoefficient: Int!
+  createdTransaction: Int!
+  createdTransactionHash: String
+}
+
+type UpdateNounsProposalPayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: NounsProposal!
+  clientMutationId: String
+}
+
+input UpdateNounsProposalInput {
+  id: ID!
+  content: PartialNounsProposalInput!
+  options: UpdateOptionsInput
+  clientMutationId: String
+}
+
+input PartialNounsProposalInput {
+  status: String
+  values: [String]
+  daoName: String
+  targets: [String]
+  endBlock: Int
+  forVotes: Int
+  proposer: String
+  calldatas: [String]
+  signatures: [String]
+  startBlock: Int
+  description: String
+  proposal_id: Int
+  quorumVotes: Int
+  totalSupply: Int
+  abstainVotes: Int
+  againstVotes: Int
+  createdBlock: Int
+  executionETA: Int
+  createdTimestamp: Int
+  maxQuorumVotesBPS: Int
+  minQuorumVotesBPS: Int
+  proposalThreshold: Int
+  quorumCoefficient: Int
+  createdTransaction: Int
+  createdTransactionHash: String
+}
+
+type CreateNounsProposalVotePayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: NounsProposalVote!
+  clientMutationId: String
+}
+
+input CreateNounsProposalVoteInput {
+  content: NounsProposalVoteInput!
+  clientMutationId: String
+}
+
+input NounsProposalVoteInput {
+  votes: Int!
+  reason: String
+  support: Boolean!
+  vote_id: String!
+  votesRaw: Int!
+  blocknumber: Int!
+  eth_address: String!
+  supportDetailed: Int!
+  proposal_stream_id: CeramicStreamID!
+}
+
+type UpdateNounsProposalVotePayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: NounsProposalVote!
+  clientMutationId: String
+}
+
+input UpdateNounsProposalVoteInput {
+  id: ID!
+  content: PartialNounsProposalVoteInput!
+  options: UpdateOptionsInput
+  clientMutationId: String
+}
+
+input PartialNounsProposalVoteInput {
+  votes: Int
+  reason: String
+  support: Boolean
+  vote_id: String
+  votesRaw: Int
+  blocknumber: Int
+  eth_address: String
+  supportDetailed: Int
+  proposal_stream_id: CeramicStreamID
+}
+
+type CreateProphouseCommunityPayload {
+  """Fetches an object given 
+  viewer: CeramicAccount
+  document: ProphouseCommunity!
+  clientMutationId: String
+}
+
+input CreateProphouseCommunityInput {
+  content: ProphouseCommunityInput!
+  clientMutationId: String
+}
+
+input ProphouseCommunityInput {
+  createdDate: String!
+  description: String!
+  community_id: Int!
+  contractAddress: String!
+  lastUpdatedDate: String!
+  profileImageUrl: String!
+}
+
+type UpdateProphouseCommunityPayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: ProphouseCommunity!
+  clientMutationId: String
+}
+
+input UpdateProphouseCommunityInput {
+  id: ID!
+  content: PartialProphouseCommunityInput!
+  options: UpdateOptionsInput
+  clientMutationId: String
+}
+
+input PartialProphouseCommunityInput {
+  createdDate: String
+  description: String
+  community_id: Int
+  contractAddress: String
+  lastUpdatedDate: String
+  profileImageUrl: String
+}
+
+type CreateProphouseAuctionPayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: ProphouseAuction!
+  clientMutationId: String
+}
+
+input CreateProphouseAuctionInput {
+  content: ProphouseAuctionInput!
+  clientMutationId: String
+}
+
+input ProphouseAuctionInput {
+  title: String!
+  startTime: String!
+  auction_id: Int!
+  description: String!
+  votingEndTime: String!
+  proposalEndTime: String!
+}
+
+type UpdateProphouseAuctionPayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: ProphouseAuction!
+  clientMutationId: String
+}
+
+input UpdateProphouseAuctionInput {
+  id: ID!
+  content: PartialProphouseAuctionInput!
+  options: UpdateOptionsInput
+  clientMutationId: String
+}
+
+input PartialProphouseAuctionInput {
+  title: String
+  startTime: String
+  auction_id: Int
+  description: String
+  votingEndTime: String
+  proposalEndTime: String
+}
+
+type CreateProphouseProposalPayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: ProphouseProposal!
+  clientMutationId: String
+}
+
+input CreateProphouseProposalInput {
+  content: ProphouseProposalInput!
+  clientMutationId: String
+}
+
+input ProphouseProposalInput {
+  tldr: String!
+  what: String!
+  title: String!
+  voteCount: Int!
+  proposal_id: Int!
+  contractAddress: String!
+}
+
+type UpdateProphouseProposalPayload {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Account currently authenticated on the Ceramic instance, if set"""
+  viewer: CeramicAccount
+  document: ProphouseProposal!
+  clientMutationId: String
+}
+
+input UpdateProphouseProposalInput {
+  id: ID!
+  content: PartialProphouseProposalInput!
+  options: UpdateOptionsInput
+  clientMutationId: String
+}
+
+input PartialProphouseProposalInput {
+  tldr: String
+  what: String
+  title: String
+  voteCount: Int
+  proposal_id: Int
+  contractAddress: String
+}

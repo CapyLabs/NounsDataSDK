@@ -11,6 +11,18 @@
     "NounsProposalVote": {
       "id": "kjzl6hvfrbw6c6dmc8dbqgj4wvjqlfh1cha44nmwqqukde9mh5wswtsk6vi3gf2",
       "accountRelation": { "type": "list" }
+    },
+    "ProphouseCommunity": {
+      "id": "kjzl6hvfrbw6c86d6eb7bylc3wzp52pbw0kpzqe6bf2jub8wefteqg6pbefb92e",
+      "accountRelation": { "type": "list" }
+    },
+    "ProphouseAuction": {
+      "id": "kjzl6hvfrbw6ca3whm1h1hy1fnk3dvssom5e4k2jv8w4hy74hbsamobwq40akj2",
+      "accountRelation": { "type": "list" }
+    },
+    "ProphouseProposal": {
+      "id": "kjzl6hvfrbw6c9kjw1icc7nnuyajz9xt1mxt195v9yo5sz6cc7ipnxjakl4yqmk",
+      "accountRelation": { "type": "list" }
     }
   },
   "objects": {
@@ -85,6 +97,30 @@
           "property": "proposal_stream_id"
         }
       }
+    },
+    "ProphouseCommunity": {
+      "createdDate": { "type": "string", "required": true },
+      "description": { "type": "string", "required": true },
+      "community_id": { "type": "integer", "required": true },
+      "contractAddress": { "type": "string", "required": true },
+      "lastUpdatedDate": { "type": "string", "required": true },
+      "profileImageUrl": { "type": "string", "required": true }
+    },
+    "ProphouseAuction": {
+      "title": { "type": "string", "required": true },
+      "startTime": { "type": "string", "required": true },
+      "auction_id": { "type": "integer", "required": true },
+      "description": { "type": "string", "required": true },
+      "votingEndTime": { "type": "string", "required": true },
+      "proposalEndTime": { "type": "string", "required": true }
+    },
+    "ProphouseProposal": {
+      "tldr": { "type": "string", "required": true },
+      "what": { "type": "string", "required": true },
+      "title": { "type": "string", "required": true },
+      "voteCount": { "type": "integer", "required": true },
+      "proposal_id": { "type": "integer", "required": true },
+      "contractAddress": { "type": "string", "required": true }
     }
   },
   "enums": {},
@@ -94,6 +130,18 @@
     "nounsProposalVoteList": {
       "type": "connection",
       "name": "NounsProposalVote"
+    },
+    "prophouseCommunityList": {
+      "type": "connection",
+      "name": "ProphouseCommunity"
+    },
+    "prophouseAuctionList": {
+      "type": "connection",
+      "name": "ProphouseAuction"
+    },
+    "prophouseProposalList": {
+      "type": "connection",
+      "name": "ProphouseProposal"
     }
   }
 }
