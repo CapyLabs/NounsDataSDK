@@ -240,20 +240,48 @@ const importPropHouse = async () => {
 
   const data = await postGraphQl(URL_PROPHOUSE, QUERY_PROPHOUSE_PROPOSALS)
 
+  var maxProposalId = 0
+  var map_id_to_proposal = {}
+
   const communities = data['data']['communities']
   for (const community of communities) {
     for (const auction of community['auctions']) {
       for (const proposal of auction['proposals']) {
         console.log('%d %s %s %s', proposal['id'], proposal['address'], proposal['title'], proposal['voteCount'])
+        if (proposal['id'] > maxProposalId) {
+          maxProposalId = proposal['id']
+        }
+
+        map_id_to_proposal[proposal['id']] = proposal
       }
     }
   }
 
+  console.log('maxProposalId: %d', maxProposalId)
 
   var ceramicPropHouseProposals = await client.getCeramicProphouseProposals()
   ceramicPropHouseProposals = ceramicPropHouseProposals['data']['prophouseProposalIndex']['edges']
   console.log('Loaded %d ceramic prophouse proposals', ceramicPropHouseProposals.length)
 
+
+  // Get the minimum and maximum proposal_id from ceramic
+  // Iterate through prophouse proposals, id ascending
+  // starting from ceramic minimum
+  // Upsert any which exist, create new ones which dont exist
+  // Next time we query ceramic, we assume we will get the newest ones
+  
+
+
+  /* Make object like 
+   proposal_id: Int! @int(min: 0)
+  contractAddress: String! @string(maxLength:2048)
+
+  title: String! @string(maxLength:2048)
+  what: String! @string(maxLength:20000)
+  tldr: String! @string(maxLength:20000)
+
+  voteCount: Int! @int(min: 0)
+  for client.writeCeramcProphouseProposal*/
 }
 await importPropHouse()
 
