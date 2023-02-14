@@ -263,13 +263,9 @@ const importPropHouse = async () => {
   ceramicPropHouseProposals = ceramicPropHouseProposals['data']['prophouseProposalIndex']['edges']
   console.log('Loaded %d ceramic prophouse proposals', ceramicPropHouseProposals.length)
 
-
-  // Get the minimum and maximum proposal_id from ceramic
-  // Iterate through prophouse proposals, id ascending
-  // starting from ceramic minimum
-  // Upsert any which exist, create new ones which dont exist
-  // Next time we query ceramic, we assume we will get the newest ones
-  
+  // V1
+  // Get all ceramic prophouse proposals
+  // Do normal upsert or create
 
 
   /* Make object like 
