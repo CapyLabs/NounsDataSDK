@@ -46,10 +46,11 @@ export const QUERY_GET_PROPHOUSE_PROPOSALS = `
   }
 `
 
-
-export const QUERY_GET_PROPHOUSE_PROPOSALS_PAGINATED = `
+// TODO: first, after could be passed as graphql variables
+// instead of string replace
+export const QUERY_GET_PROPHOUSE_PROPOSALS_PAGINATED_FIRST = `
   query {
-    prophouseProposalIndex(last: INT_LAST, after: \"STRING_AFTER\") { edges { node {
+    prophouseProposalIndex(first: INT_FIRST) { edges { node {
       id
       proposal_id
       contractAddress
@@ -57,8 +58,34 @@ export const QUERY_GET_PROPHOUSE_PROPOSALS_PAGINATED = `
       what
       tldr
       voteCount
-    }}}
+    }}
+  pageInfo {
+    hasPreviousPage
+    hasNextPage
+    startCursor
+    endCursor
   }
+}}
+`
+
+export const QUERY_GET_PROPHOUSE_PROPOSALS_PAGINATED_FIRST_AFTER = `
+  query {
+    prophouseProposalIndex(first: INT_FIRST, after: \"STRING_AFTER\") { edges { node {
+      id
+      proposal_id
+      contractAddress
+      title
+      what
+      tldr
+      voteCount
+    }}
+  pageInfo {
+    hasPreviousPage
+    hasNextPage
+    startCursor
+    endCursor
+  }
+}}
 `
 
 export type NounishProfileResponse = {

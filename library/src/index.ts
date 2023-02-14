@@ -12,12 +12,12 @@ export const start = async () => {
   const length = normal['data']['nounsProposalIndex']['edges'].length
   console.log("getCeramicProposals() length " + length);
 
+  // const paginated = JSON.stringify(await client.getCeramicProposalsPaginated());
+  // console.log('-------------\n\n' + paginated)
 
-  // result['data']['nounsProposalIndex']['edges'].length
-
-  const paginated = JSON.stringify(await client.getCeramicProposalsPaginated());
-  
+  const paginated = JSON.stringify(await client.getCeramicProphouseProposalsPaginated());  
   console.log('-------------\n\n' + paginated)
+
 
 
   /*
