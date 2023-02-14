@@ -5,8 +5,17 @@ export const start = async () => {
   await client.authenticate("bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688")
 
   //console.log("getNounishProfile()" + JSON.stringify(await client.getAuthenticatedNounishProfile()))
-  // console.log("getCeramicProposals()" + JSON.stringify(await client.getCeramicProposals()))
+  //console.log("getCeramicProposals()" + JSON.stringify(await client.getCeramicProposals()))
+  
 
+  console.log("getCeramicProposals() length " + JSON.stringify(await client.getCeramicProposals()))
+  // result['data']['nounsProposalIndex']['edges'].length
+
+  const paginated = JSON.stringify(await client.getCeramicProposalsPaginated();
+  console.log('-------------\n\n' + paginated)
+
+
+  /*
   const proposal = {
     "proposal_id":"93",
     "description":"# lilnouns.eth: set reverse record\n\nThis is a simple proposal to set the reverse record from the treasury to be lilnouns.eth. By setting this reverse record, anyone will be able to easily send anything to Lil Nouns by simply inputting lilnouns.eth.\n\ncopypasta of https://nouns.wtf/vote/205 and https://nouns.wtf/vote/202."
@@ -29,7 +38,7 @@ export const start = async () => {
     console.log('writeProposal response: ' + JSON.stringify(response))
    } catch(e) {
      console.log('error: ' + e)
-   }
+   }*/
 
 }
 

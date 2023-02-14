@@ -46,6 +46,21 @@ export const QUERY_GET_PROPHOUSE_PROPOSALS = `
   }
 `
 
+
+export const QUERY_GET_PROPHOUSE_PROPOSALS_PAGINATED = `
+  query {
+    prophouseProposalIndex(last: INT_LAST, after: \"STRING_AFTER\") { edges { node {
+      id
+      proposal_id
+      contractAddress
+      title
+      what
+      tldr
+      voteCount
+    }}}
+  }
+`
+
 export type NounishProfileResponse = {
   data: {
     viewer: {
@@ -61,6 +76,44 @@ export type CreateNounishProfileResponse = {
     }
   }
 }
+
+export const QUERY_GET_PROPOSALS_PAGINATED_FIRST = `query { nounsProposalIndex(first: INT_FIRST) {edges { node { 
+  id
+  endBlock
+  proposal_id
+  proposer
+  daoName
+  status
+}}
+
+pageInfo {
+  hasPreviousPage
+  hasNextPage
+  startCursor
+  endCursor
+}
+
+}}`
+
+export const QUERY_GET_PROPOSALS_PAGINATED_FIRST_AFTER = `query { nounsProposalIndex(first: INT_FIRST, after:\"STRING_AFTER\") {edges { node { 
+  id
+  endBlock
+  proposal_id
+  proposer
+  daoName
+  status
+}}
+
+pageInfo {
+  hasPreviousPage
+  hasNextPage
+  startCursor
+  endCursor
+}
+
+}}`
+
+
 
 export const QUERY_GET_PROPOSALS = `query { nounsProposalIndex(last:1000) {edges { node { 
   id
@@ -90,6 +143,7 @@ export const QUERY_GET_PROPOSALS = `query { nounsProposalIndex(last:1000) {edges
   daoName
   createdTransactionHash
 }}}}`
+
 
 export const QUERY_GET_PROPOSAL_VOTES = `
 query { nounsProposalVoteIndex(last: 1000) {edges { node {

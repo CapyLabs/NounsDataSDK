@@ -7,6 +7,7 @@ import { fromString } from "uint8arrays/from-string";
 import { type DocumentNode, type ExecutionResult, type Source } from 'graphql';
 
 import { QUERY_GET_VIEWER_NOUNISH_PROFILE, QUERY_GET_PROPOSALS, QUERY_GET_PROPOSAL_VOTES, QUERY_GET_PROPHOUSE_PROPOSALS, NounishProfileResponse, CreateNounishProfileResponse } from "./queries.js";
+import { QUERY_GET_PROPOSALS_PAGINATED_FIRST, QUERY_GET_PROPOSALS_PAGINATED_FIRST_AFTER } from "./queries.js";
 import { definition } from "./__generated__/definition.js";
 import { NounishProfile } from "../model/NounishProfile.js"
 
@@ -107,6 +108,21 @@ export class NounsDataClient {
   public getCeramicProposals(): Promise<ExecutionResult<any>> {
     return this.composeClient.executeQuery(QUERY_GET_PROPOSALS)
   }
+
+  public async getCeramicProposalsPaginated(): Promise<ExecutionResult<any>> {
+    
+    const step: Number = 10
+
+    // has INT_FIRST and STRING_AFTER
+    let query = QUERY_GET_PROPOSALS_PAGINATED_FIRST
+    query = query.replace('INT_FIRST', step + "")
+
+    let page = await this.composeClient.executeQuery(QUERY_GET_PROPOSALS)
+    let pageInfo = page['data']['pageInfo']
+
+    console.log('pageInfo: '  + JSON.stringify(pageInfo))
+  }
+
 
   public async upsertProposal(ceramicId: any, proposal: any) {
     const upsert_proposal_query = `
