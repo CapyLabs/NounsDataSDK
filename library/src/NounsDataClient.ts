@@ -7,6 +7,9 @@ import { fromString } from "uint8arrays/from-string";
 import { type DocumentNode, type ExecutionResult, type Source } from 'graphql';
 
 import { QUERY_GET_VIEWER_NOUNISH_PROFILE, QUERY_GET_PROPOSALS, QUERY_GET_PROPOSAL_VOTES, QUERY_GET_PROPHOUSE_PROPOSALS, NounishProfileResponse, CreateNounishProfileResponse } from "./queries.js";
+import { QUERY_GET_PROPOSALS_PAGINATED_FIRST, QUERY_GET_PROPOSALS_PAGINATED_FIRST_AFTER } from "./queries.js";
+import { QUERY_GET_PROPHOUSE_PROPOSALS_PAGINATED_FIRST, QUERY_GET_PROPHOUSE_PROPOSALS_PAGINATED_FIRST_AFTER } from "./queries.js";
+
 import { definition } from "./__generated__/definition.js";
 import { NounishProfile } from "../model/NounishProfile.js"
 
@@ -106,6 +109,38 @@ export class NounsDataClient {
 
   public getCeramicProposals(): Promise<ExecutionResult<any>> {
     return this.composeClient.executeQuery(QUERY_GET_PROPOSALS)
+  }
+
+  public async getCeramicProposalsPaginated(): Promise<any> {
+    const step: Number = 50
+
+    let query = QUERY_GET_PROPOSALS_PAGINATED_FIRST
+    query = query.replace('INT_FIRST', step + "")
+
+    let pageInfo: any = {
+      'hasNextPage': false
+    }
+
+    // TODO: Append to result vector
+    let counter = 0
+
+    do {
+
+      let page = await this.composeClient.executeQuery(query)
+      pageInfo = page!['data']!['nounsProposalIndex']
+      pageInfo = pageInfo['pageInfo']
+
+      query = QUERY_GET_PROPOSALS_PAGINATED_FIRST_AFTER
+      query = query.replace('INT_FIRST', step + "")
+      query = query.replace('STRING_AFTER', pageInfo['endCursor'])
+
+      counter += 1
+      console.log('- ' + pageInfo['hasNextPage'])
+
+      // Todo append page to result list
+    } while(pageInfo['hasNextPage'])
+
+    return counter
   }
 
   public async upsertProposal(ceramicId: any, proposal: any) {
@@ -225,6 +260,42 @@ export class NounsDataClient {
   public getCeramicProphouseProposals(): Promise<ExecutionResult<any>> {
     return this.composeClient.executeQuery(QUERY_GET_PROPHOUSE_PROPOSALS)
   }
+
+  public async getCeramicProphouseProposalsPaginated(): Promise<any> {
+    const step: Number = 50
+
+    let query = QUERY_GET_PROPHOUSE_PROPOSALS_PAGINATED_FIRST
+    query = query.replace('INT_FIRST', step + "")
+
+    let pageInfo: any = {
+      'hasNextPage': false
+    }
+
+    // TODO: Append to result vector
+    let counter = 0
+
+    do {
+
+      let page = await this.composeClient.executeQuery(query)
+
+      console.log(JSON.stringify(page))
+
+      pageInfo = page!['data']!['prophouseProposalIndex']
+      pageInfo = pageInfo['pageInfo']
+
+      query = QUERY_GET_PROPHOUSE_PROPOSALS_PAGINATED_FIRST_AFTER
+      query = query.replace('INT_FIRST', step + "")
+      query = query.replace('STRING_AFTER', pageInfo['endCursor'])
+
+      counter += 1
+      console.log('- ' + pageInfo['hasNextPage'])
+
+      // Todo append page to result list
+    } while(pageInfo['hasNextPage'])
+
+    return counter
+  }
+
 
   public async writeProphouseProposal(proposal: any): Promise<any> {
     if (!this.isAuthenticated()) {
