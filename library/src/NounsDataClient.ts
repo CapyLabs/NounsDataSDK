@@ -109,18 +109,57 @@ export class NounsDataClient {
     return this.composeClient.executeQuery(QUERY_GET_PROPOSALS)
   }
 
-  public async getCeramicProposalsPaginated(): Promise<ExecutionResult<any>> {
+  /*public async getCeramicProposalsPaginated(): Promise<any> {
     
-    const step: Number = 10
+    const step: Number = 1
 
     // has INT_FIRST and STRING_AFTER
     let query = QUERY_GET_PROPOSALS_PAGINATED_FIRST
     query = query.replace('INT_FIRST', step + "")
 
-    let page = await this.composeClient.executeQuery(QUERY_GET_PROPOSALS)
-    let pageInfo = page['data']['pageInfo']
+    console.log('query: ' + query)
+
+    let page = await this.composeClient.executeQuery(query)
+    
+    console.log('page: ' + JSON.stringify(page))
+
+    let pageInfo: any = page!['data']!['nounsProposalIndex']
+    pageInfo = pageInfo['pageInfo']
 
     console.log('pageInfo: '  + JSON.stringify(pageInfo))
+
+    return page
+  }*/
+  public async getCeramicProposalsPaginated(): Promise<any> {
+    
+    const step: Number = 50
+
+    let query = QUERY_GET_PROPOSALS_PAGINATED_FIRST
+    query = query.replace('INT_FIRST', step + "")
+
+    let pageInfo: any = {
+      'hasNextPage': false
+    }
+
+    let counter = 0
+
+    do {
+
+      let page = await this.composeClient.executeQuery(query)
+      pageInfo = page!['data']!['nounsProposalIndex']
+      pageInfo = pageInfo['pageInfo']
+
+      query = QUERY_GET_PROPOSALS_PAGINATED_FIRST_AFTER
+      query = query.replace('INT_FIRST', step + "")
+      query = query.replace('STRING_AFTER', pageInfo['endCursor'])
+
+      counter += 1
+      console.log('- ' + pageInfo['hasNextPage'])
+
+      // Todo append page to result list
+    } while(pageInfo['hasNextPage'])
+
+    return counter
   }
 
 

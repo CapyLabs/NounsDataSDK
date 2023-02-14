@@ -8,10 +8,15 @@ export const start = async () => {
   //console.log("getCeramicProposals()" + JSON.stringify(await client.getCeramicProposals()))
   
 
-  console.log("getCeramicProposals() length " + JSON.stringify(await client.getCeramicProposals()))
+  const normal = await client.getCeramicProposals()
+  const length = normal['data']['nounsProposalIndex']['edges'].length
+  console.log("getCeramicProposals() length " + length);
+
+
   // result['data']['nounsProposalIndex']['edges'].length
 
-  const paginated = JSON.stringify(await client.getCeramicProposalsPaginated();
+  const paginated = JSON.stringify(await client.getCeramicProposalsPaginated());
+  
   console.log('-------------\n\n' + paginated)
 
 
