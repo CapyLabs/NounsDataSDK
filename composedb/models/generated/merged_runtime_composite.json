@@ -4,14 +4,6 @@
       "id": "kjzl6hvfrbw6ca02lpn94dtzq5tn7vge0t9ayomihoba1ax0erj2xgun2j8qmo6",
       "accountRelation": { "type": "single" }
     },
-    "NounsProposal": {
-      "id": "kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2",
-      "accountRelation": { "type": "list" }
-    },
-    "NounsProposalVote": {
-      "id": "kjzl6hvfrbw6c6dmc8dbqgj4wvjqlfh1cha44nmwqqukde9mh5wswtsk6vi3gf2",
-      "accountRelation": { "type": "list" }
-    },
     "ProphouseCommunity": {
       "id": "kjzl6hvfrbw6c86d6eb7bylc3wzp52pbw0kpzqe6bf2jub8wefteqg6pbefb92e",
       "accountRelation": { "type": "list" }
@@ -34,69 +26,6 @@
       "discourse_username": { "type": "string", "required": false },
       "farcaster_username": { "type": "string", "required": false },
       "proposal_category_preference": { "type": "string", "required": false }
-    },
-    "NounsProposal": {
-      "status": { "type": "string", "required": true },
-      "values": {
-        "type": "list",
-        "required": true,
-        "item": { "type": "string", "required": true }
-      },
-      "daoName": { "type": "string", "required": true },
-      "targets": {
-        "type": "list",
-        "required": true,
-        "item": { "type": "string", "required": true }
-      },
-      "endBlock": { "type": "integer", "required": true },
-      "forVotes": { "type": "integer", "required": true },
-      "proposer": { "type": "string", "required": true },
-      "calldatas": {
-        "type": "list",
-        "required": true,
-        "item": { "type": "string", "required": true }
-      },
-      "signatures": {
-        "type": "list",
-        "required": true,
-        "item": { "type": "string", "required": true }
-      },
-      "startBlock": { "type": "integer", "required": true },
-      "description": { "type": "string", "required": false },
-      "proposal_id": { "type": "integer", "required": true },
-      "quorumVotes": { "type": "integer", "required": true },
-      "totalSupply": { "type": "integer", "required": true },
-      "abstainVotes": { "type": "integer", "required": true },
-      "againstVotes": { "type": "integer", "required": true },
-      "createdBlock": { "type": "integer", "required": true },
-      "executionETA": { "type": "integer", "required": false },
-      "createdTimestamp": { "type": "integer", "required": true },
-      "maxQuorumVotesBPS": { "type": "integer", "required": false },
-      "minQuorumVotesBPS": { "type": "integer", "required": false },
-      "proposalThreshold": { "type": "integer", "required": true },
-      "quorumCoefficient": { "type": "integer", "required": true },
-      "createdTransaction": { "type": "integer", "required": true },
-      "createdTransactionHash": { "type": "string", "required": false }
-    },
-    "NounsProposalVote": {
-      "votes": { "type": "integer", "required": true },
-      "reason": { "type": "string", "required": false },
-      "support": { "type": "boolean", "required": true },
-      "vote_id": { "type": "string", "required": true },
-      "votesRaw": { "type": "integer", "required": true },
-      "blocknumber": { "type": "integer", "required": true },
-      "eth_address": { "type": "string", "required": true },
-      "supportDetailed": { "type": "integer", "required": true },
-      "proposal_stream_id": { "type": "streamid", "required": true },
-      "nouns_proposal": {
-        "type": "view",
-        "viewType": "relation",
-        "relation": {
-          "source": "document",
-          "model": "kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2",
-          "property": "proposal_stream_id"
-        }
-      }
     },
     "ProphouseCommunity": {
       "createdDate": { "type": "string", "required": true },

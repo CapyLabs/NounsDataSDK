@@ -1,0 +1,11 @@
+echo 'test'
+
+composedb composite:create nouns_proposal.graphql --output=generated/nouns_proposal_composite.json -k=bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688
+composedb composite:deploy generated/nouns_proposal.json -k=bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688
+
+composedb composite:create nouns_proposal_vote.graphql --output=generated/nouns_proposal_vote_composite.json -k=bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688
+composedb composite:deploy generated/nouns_proposal_vote.json -k=bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688
+
+
+composedb composite:merge generated/merged_composites.json generated/nouns_proposal.json --output=generated/merged_composites.json
+composedb composite:merge generated/merged_composites.json generated/nouns_proposal_vote.json --output=generated/merged_composites.json
