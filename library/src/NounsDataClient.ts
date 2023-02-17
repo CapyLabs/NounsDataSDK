@@ -398,7 +398,6 @@ public async upsertProphouseProposal(ceramicId: any, proposal: any) {
       createNounsProposalVote(input: $vote) {
           document {
             proposal_stream_id
-            nouns_proposal
             eth_address
             blocknumber
             vote_id

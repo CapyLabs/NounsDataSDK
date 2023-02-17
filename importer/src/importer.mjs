@@ -96,12 +96,15 @@ const theGraphProposalToCeramicVotes = (thegraph_proposal, proposal_ceramic_mode
   const real_votes = thegraph_proposal['votes']
   for (const real_vote of real_votes) {
     const vote_theGraph_format = {
-      'proposal_stream_id': proposal_ceramic_model_id, // TODO: Is this how writing model with mutation works?
-      'nouns_proposal': proposal_ceramic_id,
+      'proposal_stream_id': proposal_ceramic_id, //proposal_ceramic_model_id, // TODO: Is this how writing model with mutation works?
+      //'nouns_proposal': proposal_ceramic_id,
+      /*'nouns_proposal': {
+        'id': proposal_ceramic_id
+      },*/
       'eth_address': real_vote['voter']['id'],
-      'blocknumber': real_vote['blockNumber'],
+      'blocknumber': parseInt(real_vote['blockNumber']),
       'vote_id': real_vote['id'],
-      'reason': real_vote['reason'],
+      'reason': '', //real_vote['reason'],
       'support': real_vote['support'],
       'supportDetailed': real_vote['supportDetailed'],
       'votes': parseInt(real_vote['votes']),
