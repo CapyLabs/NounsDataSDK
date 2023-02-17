@@ -109,6 +109,19 @@ export const QUERY_THEGRAPH_NOUNS_PROPOSALS = `{
     id
     maxQuorumVotesBPS
     minQuorumVotesBPS
+    votes {
+      id
+      votes
+      votesRaw
+      blockNumber
+      reason
+      support
+      supportDetailed
+      voter {
+        id
+        delegatedVotes
+      }
+    }
     proposer {
       delegatedVotes
       delegatedVotesRaw
