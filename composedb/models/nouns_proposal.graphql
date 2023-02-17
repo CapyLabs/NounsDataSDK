@@ -1,6 +1,12 @@
 # The Nouns Proposal composite schema definition. 
 # Deployed on Clay Testnet as kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2
 
+
+type NounsProposalVote @loadModel(id: "kjzl6hvfrbw6c6dmc8dbqgj4wvjqlfh1cha44nmwqqukde9mh5wswtsk6vi3gf2") {
+  id: ID!
+}
+
+
 type NounsProposal @createModel(accountRelation: LIST, description: "On-chain proposals and their voting stats") {
   abstainVotes: Int! @int(min: 0)
   againstVotes: Int! @int(min: 0)
@@ -27,4 +33,5 @@ type NounsProposal @createModel(accountRelation: LIST, description: "On-chain pr
   values: [String]! @string(maxLength:1000) @list(maxLength: 256)
   daoName: String! @string(maxLength:1000)
   createdTransactionHash: String @string(maxLength:256)
+  votes: [NounsProposalVote] @relationFrom(mode: "NounsProposalVote", property: "id")
 }
