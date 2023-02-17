@@ -197,6 +197,7 @@ export class NounsDataClient {
       )
   }
 
+
   public async writeProposal(proposal: any): Promise<any> {
     if (!this.isAuthenticated()) {
       return new Promise((resolve, reject) => {
@@ -397,6 +398,7 @@ public async upsertProphouseProposal(ceramicId: any, proposal: any) {
       createNounsProposalVote(input: $vote) {
           document {
             proposal_stream_id
+            nouns_proposal
             eth_address
             blocknumber
             vote_id
@@ -410,7 +412,7 @@ public async upsertProphouseProposal(ceramicId: any, proposal: any) {
     }`
 
     const create_vote_variables = {
-      "proposal": {
+      "vote": {
         "content": vote
       }
     }
@@ -428,7 +430,7 @@ public async upsertProphouseProposal(ceramicId: any, proposal: any) {
               resolve(response); //.data.createNounishProfile.document);
             }
           })
-      )
+      ).catch((e) => console.log(JSON.stringify(e)))
   }
 
 

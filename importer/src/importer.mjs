@@ -218,6 +218,12 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
       const ceramicFormatVotes = theGraphProposalToCeramicVotes(thegraphProposal, proposal_stream_id, ceramic_id)
       console.log('ceramic format votes: \n\n%s\n\n', JSON.stringify(ceramicFormatVotes))
 
+      for (const ceramicFormatVote of ceramicFormatVotes) {
+        // TODO: Check this one isn't already written. may need upsert?
+        const response = await client.writeProposalVote(ceramicFormatVote)
+        console.log('writeProposalVote response: ' + JSON.stringify(response))
+      }
+
 
       // Write proposal votes approaches.
 
