@@ -26,6 +26,8 @@ composedb composite:merge generated/merged_composites.json generated/nounish_pro
 echo 'Compiling merged composite'
 composedb composite:compile generated/merged_composite.json generated/merged_runtime_composite.json
 
-echo 'Make sure to copy merged_runtime_composite into /library/src/__generated__/ and restart graphql if needed'
+echo 'Remaining action items:'
+echo '- copy merged_runtime_composite into /library/src/__generated__/ and restart graphql if needed'
+echo '- update model instance ids in scripts and graphql files'
 
 # composedb composite:merge generated/merged_composites.json generated/nouns_proposal_vote.json --output=generated/merged_composites.json
