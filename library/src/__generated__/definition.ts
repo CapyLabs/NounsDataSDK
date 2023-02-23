@@ -1,3 +1,5 @@
+// The composite runtime definition, copied from the generated file in the path composedb/models/generated/merged_runtime_composite.json
+
 export const definition = {
    "models":{
       "NounishProfile":{
