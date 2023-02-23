@@ -1,0 +1,9 @@
+
+
+type NounsProposalVote @loadModel(id: "kj...") {
+  id: ID!
+}
+
+type NounsProposal @loadModel(id: "kj...") {
+  votes: [NounsProposalVote] @relationFrom(mode: "NounsProposalVote", property: "id")
+}
