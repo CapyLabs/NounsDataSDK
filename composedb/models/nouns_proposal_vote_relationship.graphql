@@ -4,5 +4,5 @@ type NounsProposalVote @loadModel(id: "kjzl6hvfrbw6c6dmc8dbqgj4wvjqlfh1cha44nmwq
 }
 
 type NounsProposal @loadModel(id: "kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2") {
-  votes: [NounsProposalVote] @relationFrom(mode: "NounsProposalVote", property: "proposal_stream_id")
+  votes: [NounsProposalVote] @relationFrom(model: "NounsProposalVote", property: "proposal_stream_id")
 }
