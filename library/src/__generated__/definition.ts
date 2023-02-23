@@ -1,5 +1,11 @@
 export const definition = {
    "models":{
+      "NounishProfile":{
+         "id":"kjzl6hvfrbw6c84ezcug10ld66fg22t01lnha1z07vw5mfcvrb08yobbq1r24ci",
+         "accountRelation":{
+            "type":"single"
+         }
+      },
       "NounsProposal":{
          "id":"kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2",
          "accountRelation":{
@@ -14,6 +20,40 @@ export const definition = {
       }
    },
    "objects":{
+      "NounishProfile":{
+         "time_zone":{
+            "type":"string",
+            "required":false
+         },
+         "eth_address":{
+            "type":"string",
+            "required":true
+         },
+         "discord_username":{
+            "type":"string",
+            "required":false
+         },
+         "twitter_username":{
+            "type":"string",
+            "required":false
+         },
+         "discourse_username":{
+            "type":"string",
+            "required":false
+         },
+         "farcaster_username":{
+            "type":"string",
+            "required":false
+         },
+         "proposal_category_preference":{
+            "type":"string",
+            "required":false
+         },
+         "did":{
+            "type":"view",
+            "viewType":"documentAccount"
+         }
+      },
       "NounsProposal":{
          "status":{
             "type":"string",
@@ -193,6 +233,10 @@ export const definition = {
       
    },
    "accountData":{
+      "nounishProfile":{
+         "type":"node",
+         "name":"NounishProfile"
+      },
       "nounsProposalList":{
          "type":"connection",
          "name":"NounsProposal"
