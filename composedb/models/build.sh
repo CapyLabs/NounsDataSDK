@@ -1,3 +1,5 @@
+#!/bin/bash
+
 TARGET_DIR='generated2' #'generated'
 ADMIN_KEY='bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688'
 

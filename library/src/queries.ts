@@ -185,6 +185,28 @@ query { nounsProposalVoteIndex(last: 1000) {edges { node {
   votesRaw
 }}}}`
 
+// TODO: first, after could be passed as graphql variables
+// instead of string replace
+/*export const QUERY_GET_PROPOSALS_PAGINATED_FIRST = `
+  query {
+    prophouseProposalIndex(first: INT_FIRST) { edges { node {
+      id
+      proposal_id
+      contractAddress
+      title
+      what
+      tldr
+      voteCount
+    }}
+  pageInfo {
+    hasPreviousPage
+    hasNextPage
+    startCursor
+    endCursor
+  }
+}}
+`*/
+
 
 export const QUERY_WRITE_NOUNISH_PROFILE =
   `TODO`

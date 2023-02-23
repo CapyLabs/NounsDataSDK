@@ -1,5 +1,5 @@
 # Schema definition for a vote in a Nouns Proposal. 
-# Deployed on Clay Testnet as kjzl6hvfrbw6c6dmc8dbqgj4wvjqlfh1cha44nmwqqukde9mh5wswtsk6vi3gf2
+# Deployed on Clay Testnet as kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2
 
 type NounsProposal @loadModel(id: "kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2") {
   id: ID!
