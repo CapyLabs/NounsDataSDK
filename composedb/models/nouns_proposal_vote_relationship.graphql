@@ -1,5 +1,4 @@
 
-
 type NounsProposalVote @loadModel(id: "kjzl6hvfrbw6c6dmc8dbqgj4wvjqlfh1cha44nmwqqukde9mh5wswtsk6vi3gf2") {
   id: ID!
 }

@@ -1,5 +1,5 @@
 # User-owned profile that identifies the user across the Nouniverse
-# Deployed on Clay Testnet as kjzl6hvfrbw6ca02lpn94dtzq5tn7vge0t9ayomihoba1ax0erj2xgun2j8qmo6
+# Deployed on Clay Testnet as kjzl6hvfrbw6c84ezcug10ld66fg22t01lnha1z07vw5mfcvrb08yobbq1r24ci
 
 type NounishProfile @createModel(accountRelation: SINGLE, description: "Profile for Nounish users") {
   did: DID! @documentAccount
