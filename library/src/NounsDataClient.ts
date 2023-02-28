@@ -230,6 +230,7 @@ export class NounsDataClient {
             totalSupply
             values
             daoName
+            id
           }
         }
     }`

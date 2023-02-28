@@ -169,6 +169,23 @@ export const QUERY_GET_PROPOSALS = `query { nounsProposalIndex(last:1000) {edges
   values
   daoName
   createdTransactionHash
+
+  votes(first: 1000) {
+    edges {
+      node{
+          eth_address
+              blocknumber
+              vote_id
+              reason
+              support
+              supportDetailed
+              votes
+              votesRaw
+              id
+      }
+    }
+  }
+  
 }}}}`
 
 
