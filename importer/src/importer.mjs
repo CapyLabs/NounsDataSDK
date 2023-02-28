@@ -5,17 +5,16 @@ import { NounsDataClient } from "../../library/dist/NounsDataClient.js"
 // import { NounsDataClient } from "nounsdata/dist/NounsDataClient.js"
 
 import { URL_THEGRAPH_NOUNS } from "./secrets.mjs"
-import { QUERY_THEGRAPH_NOUNS_PROPOSALS, CACHED_QUERY_NOUNS_PROPOSALS_RESPONSE } from "./queries.mjs"
+import { QUERY_THEGRAPH_NOUNS_PROPOSALS } from "./queries.mjs"
 
-import { URL_THEGRAPH_LILNOUNS, QUERY_THEGRAPH_LILNOUNS_PROPOSALS, THEGRAPH_CERAMIC_KEY_MAP, TODO_REQUIRED_KEYS, INT_TYPES, IGNORE_FIELDS } from "./queries.mjs"
+import { URL_THEGRAPH_LILNOUNS, QUERY_THEGRAPH_LILNOUNS_PROPOSALS, THEGRAPH_CERAMIC_KEY_MAP } from "./queries.mjs"
 import { URL_PROPHOUSE, QUERY_PROPHOUSE_PROPOSALS } from "./queries.mjs"
 import { postGraphQl } from "./queries.mjs"
 
 import fetch from 'cross-fetch'
+import { convertTheGraphProposalToCeramicProposal, convertTheGraphProposalToCeramicVotes } from "./converters.mjs"
 
-
-
-const ARGS_DRY_RUN = false
+const ARGS_DRY_RUN = true
 const MODELS = [
     /*{
       DAO_NAME: 'Lil Nouns',
@@ -29,9 +28,6 @@ const MODELS = [
     }
 ]
 
-
-
-
 const getTheGraphProposals = async() => {
   return postGraphQl(URL_THEGRAPH_LILNOUNS, QUERY_THEGRAPH_LILNOUNS_PROPOSALS)
 }
@@ -41,7 +37,7 @@ const getTheGraphProposals = async() => {
 // So do it manual;y
 const getCeramicProposals = (ceramicResponse, daoName) => {
   var proposals = []
-  console.log('ceramicResponse: %s', JSON.stringify(ceramicResponse))
+  //   console.log('ceramicResponse: %s', JSON.stringify(ceramicResponse))
   const ceramicProposals = ceramicResponse['data']['nounsProposalIndex']['edges']
   ceramicProposals.forEach((proposal) => {
     var proposal = proposal['node']
@@ -50,78 +46,6 @@ const getCeramicProposals = (ceramicResponse, daoName) => {
     }
   })
   return proposals;
-}
-
-
-// This function is essentially going to become
-// https://github.com/CapyLabs/eventspy/blob/main/GetEvents.py#L40
-const theGraphProposalToCeramicProposal = (thegraph_proposal) => {
-  // console.log('full thegraph_proposal: \n%s\n\n', thegraph_proposal)
-
-  let ceramic_proposal = {}
-  for (var [key, value] of Object.entries(thegraph_proposal)) {
-    
-    if (INT_TYPES.includes(key)) {
-      value = parseInt(value)
-    }
-
-    if (IGNORE_FIELDS.includes(key)) {
-      continue
-    }
-
-    if (key == 'id') {
-      key = 'proposal_id'
-    }
-
-    ceramic_proposal[key] = value
-  }
-
-  // TODO: Fix model to not include these
-  for (var [key, value] of Object.entries(TODO_REQUIRED_KEYS)) {
-    ceramic_proposal[key] = value
-  }
-
-  const proposer = thegraph_proposal['proposer']['id']
-  ceramic_proposal['proposer'] = proposer
-  ceramic_proposal['description'] = ceramic_proposal['description'].substring(0, 20000)
-
-  return ceramic_proposal
-}
-
-const theGraphProposalToCeramicVotes = (thegraph_proposal, proposal_ceramic_model_id, proposal_ceramic_id) => {
-  let votes = []
-
-  console.log('thegraph_proposal: \n\n%s\n\n\n' + JSON.stringify(thegraph_proposal))
-
-  const real_votes = thegraph_proposal['votes']
-  for (const real_vote of real_votes) {
-    const vote_theGraph_format = {
-      'proposal_stream_id': proposal_ceramic_id, //proposal_ceramic_model_id, // TODO: Is this how writing model with mutation works?
-      //'nouns_proposal': proposal_ceramic_id,
-      /*'nouns_proposal': {
-        'id': proposal_ceramic_id
-      },*/
-      'eth_address': real_vote['voter']['id'],
-      'blocknumber': parseInt(real_vote['blockNumber']),
-      'vote_id': real_vote['id'],
-      'reason': '', //real_vote['reason'],
-      'support': real_vote['support'],
-      'supportDetailed': real_vote['supportDetailed'],
-      'votes': parseInt(real_vote['votes']),
-      'votesRaw': parseInt(real_vote['votesRaw'])
-    }
-    votes.push(vote_theGraph_format)
-  }
-  return votes
-}
-
-const ceramicProposalsEqual = (a, b) => {
-  for (const [key, value] of Object.entries(THEGRAPH_CERAMIC_KEY_MAP)) {
-    if (a[value] + "" != b[value] + "") {
-      return false
-    }
-  }
-  return true
 }
 
 const buildProposalIdToCeramicIdMap = (ceramicProposals) => {
@@ -138,10 +62,9 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
 
   var thegraphResponse
 
-  if (!ARGS_DRY_RUN) {
+  if (true || !ARGS_DRY_RUN) {
     try{
-    var thegraphResponse = await postGraphQl(sourceUrl, sourceQuery) // await getTheGraphProposals()
-    console.log('RESPONSE:\n\n' + JSON.stringify(thegraphResponse) + '\n\n\n')
+      thegraphResponse = await postGraphQl(sourceUrl, sourceQuery) // await getTheGraphProposals()
     } catch (e) { console.log(JSON.stringify(e))}
   } else {
     thegraphResponse = CACHED_QUERY_NOUNS_PROPOSALS_RESPONSE
@@ -158,15 +81,9 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
   const map_proposal_id_to_ceramic_id = buildProposalIdToCeramicIdMap(ceramicProposals)
   const already_uploaded_proposal_ids = Object.keys(map_proposal_id_to_ceramic_id)
 
-
-  // TODO: This should depend on if we're doing lil nouns or big nouns...
-  const proposal_stream_id = "kjzl6hvfrbw6c8ycbb32z6pg2xbk2a2g7yy098dxklop09utbdhhrbea3t805z2";
-      
-
-
   for (const thegraphProposal of thegraphProposals) {
 
-    var thegraph_proposal_ceramic_format = theGraphProposalToCeramicProposal(thegraphProposal)
+    var thegraph_proposal_ceramic_format = convertTheGraphProposalToCeramicProposal(thegraphProposal)
     delete thegraph_proposal_ceramic_format['undefined']
     thegraph_proposal_ceramic_format['daoName'] = daoName
 
@@ -185,23 +102,14 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
       try {
         var response = {}
         if (!ARGS_DRY_RUN) {
+          // TODO: Use the id returned from this and start creating the votes
           response = await client.writeProposal(thegraph_proposal_ceramic_format)
         }
 
-        // The writeProposal response does not include the created proposal
-        // ceramic id which is necessary to write the ProposalVotes.
-        // So either way we need a seperate call to figure out
-        // the proposal ceramic ids before the votes can be added.
-        console.log('ceramic writeProposal response ' + JSON.stringify(response))
-      
-
-        //const new_proposal_ceramic_id = response['data']['createNounsProposal']['document']['']
+        // const new_proposal_ceramic_id = response['data']['createNounsProposal']['document']['']
       } catch (e) {
         console.log('ceramic writeProposal exception ' + e)
       }
-
-      // TODO: Make sure we get created proposal ceramic id 
-      // from response so we can have it for theGraphProposalToCeramicVotes 
     } else {
       const ceramic_id = map_proposal_id_to_ceramic_id[thegraphProposal['id']]
       
@@ -218,13 +126,23 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
         console.log('exception: ' + e)
       }
 
-      const ceramicFormatVotes = theGraphProposalToCeramicVotes(thegraphProposal, proposal_stream_id, ceramic_id)
+      const ceramic_proposal = ceramicProposals.find((proposal) => proposal['proposal_id'] == thegraphProposal['id'])
+      console.log('Existing proposal votes: ' + JSON.stringify(ceramic_proposal['votes']))
+      // TODO: convert existing proposal votes to a list of ceramic vote_ids. then,
+      // only create the ones that are not in that list
+
+      const ceramicFormatVotes = convertTheGraphProposalToCeramicVotes(thegraphProposal, ceramic_id)
       console.log('ceramic format votes: \n\n%s\n\n', JSON.stringify(ceramicFormatVotes))
+
+      // Check if vote_id already exists, then dont create this
 
       for (const ceramicFormatVote of ceramicFormatVotes) {
         // TODO: Check this one isn't already written. may need upsert?
-        const response = await client.writeProposalVote(ceramicFormatVote)
-        console.log('writeProposalVote response: ' + JSON.stringify(response))
+
+        if (!ARGS_DRY_RUN) {
+          const response = await client.writeProposalVote(ceramicFormatVote)
+          console.log('writeProposalVote response: ' + JSON.stringify(response))
+        }
       }
 
 
@@ -264,6 +182,7 @@ for (const model of MODELS) {
 
 
 // Prophouse
+/*
 const importPropHouse = async () => {
   const client = new NounsDataClient()
   await client.authenticate("bae843b976859f69c37ea6ee66006d54e20f1de456f60e4338a6b47d2648c688")
@@ -308,9 +227,9 @@ const importPropHouse = async () => {
   tldr: String! @string(maxLength:20000)
 
   voteCount: Int! @int(min: 0)
-  for client.writeCeramcProphouseProposal*/
+  for client.writeCeramcProphouseProposal
 }
-
+*/
 // \await importPropHouse()
 
 

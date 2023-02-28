@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "cross-fetch": "^3.1.5",
+    "node-fetch": "^3.3.0",
     "nounsdata": "^0.0.6"
   },
   "scripts": {
