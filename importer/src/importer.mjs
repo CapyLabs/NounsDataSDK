@@ -14,7 +14,7 @@ import { postGraphQl } from "./queries.mjs"
 import fetch from 'cross-fetch'
 import { convertTheGraphProposalToCeramicProposal, convertTheGraphProposalToCeramicVotes } from "./converters.mjs"
 
-const ARGS_DRY_RUN = true
+const ARGS_DRY_RUN = false
 const MODELS = [
     /*{
       DAO_NAME: 'Lil Nouns',
@@ -127,9 +127,15 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
       }
 
       const ceramic_proposal = ceramicProposals.find((proposal) => proposal['proposal_id'] == thegraphProposal['id'])
-      console.log('Existing proposal votes: ' + JSON.stringify(ceramic_proposal['votes']))
-      // TODO: convert existing proposal votes to a list of ceramic vote_ids. then,
-      // only create the ones that are not in that list
+      
+      // Get the vote_ids (thegraph format) of the votes for this proposal in ceramic
+      let existing_ceramic_vote_ids = []
+      const ceramic_proposal_votes_edges = ceramic_proposal['votes']['edges']
+      for (let ceramic_proposal_vote of ceramic_proposal_votes_edges) {
+        let ceramic_proposal_vote_id = ceramic_proposal_vote['node']['vote_id']
+        existing_ceramic_vote_ids.push(ceramic_proposal_vote_id)
+      }
+      console.log('existing ceramic vote ids: ' + JSON.stringify(existing_ceramic_vote_ids))
 
       const ceramicFormatVotes = convertTheGraphProposalToCeramicVotes(thegraphProposal, ceramic_id)
       console.log('ceramic format votes: \n\n%s\n\n', JSON.stringify(ceramicFormatVotes))
@@ -139,7 +145,8 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
       for (const ceramicFormatVote of ceramicFormatVotes) {
         // TODO: Check this one isn't already written. may need upsert?
 
-        if (!ARGS_DRY_RUN) {
+        if (!ARGS_DRY_RUN && !existing_ceramic_vote_ids.includes(ceramicFormatVote['vote_id'])) {
+
           const response = await client.writeProposalVote(ceramicFormatVote)
           console.log('writeProposalVote response: ' + JSON.stringify(response))
         }
@@ -163,7 +170,7 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
         await client.writeProposalVote(ceramicFormatVote)
       }*/
 
-      return
+      // return
     }
   }
 }
