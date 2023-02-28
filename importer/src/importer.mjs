@@ -62,13 +62,9 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
 
   var thegraphResponse
 
-  if (true || !ARGS_DRY_RUN) {
-    try{
-      thegraphResponse = await postGraphQl(sourceUrl, sourceQuery) // await getTheGraphProposals()
-    } catch (e) { console.log(JSON.stringify(e))}
-  } else {
-    thegraphResponse = CACHED_QUERY_NOUNS_PROPOSALS_RESPONSE
-  }
+  try{
+    thegraphResponse = await postGraphQl(sourceUrl, sourceQuery) // await getTheGraphProposals()
+  } catch (e) { console.log(JSON.stringify(e))}
 
   const thegraphProposals = thegraphResponse['data']['proposals']
 
@@ -87,12 +83,6 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
     delete thegraph_proposal_ceramic_format['undefined']
     thegraph_proposal_ceramic_format['daoName'] = daoName
 
-
-    // TODO This is for testing    
-    /*if (thegraphProposal['id'] != '93') {
-      continue
-    }*/
-
     var nouns_proposapl_id = -1;
 
     if (!already_uploaded_proposal_ids.includes(thegraphProposal['id'])) {
@@ -102,11 +92,12 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
       try {
         var response = {}
         if (!ARGS_DRY_RUN) {
-          // TODO: Use the id returned from this and start creating the votes
           response = await client.writeProposal(thegraph_proposal_ceramic_format)
         }
 
-        // const new_proposal_ceramic_id = response['data']['createNounsProposal']['document']['']
+        // TODO: Use the id returned from this and start creating the votes.
+        // Currently that is only done in upsert (the else statement below)
+        // const new_proposal_ceramic_id = response['data']['createNounsProposal']['document']['']...
       } catch (e) {
         console.log('ceramic writeProposal exception ' + e)
       }
@@ -128,7 +119,7 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
 
       const ceramic_proposal = ceramicProposals.find((proposal) => proposal['proposal_id'] == thegraphProposal['id'])
       
-      // Get the vote_ids (thegraph format) of the votes for this proposal in ceramic
+      // Get the vote_ids (thegraph format) of the votes for this proposal already in ceramic
       let existing_ceramic_vote_ids = []
       const ceramic_proposal_votes_edges = ceramic_proposal['votes']['edges']
       for (let ceramic_proposal_vote of ceramic_proposal_votes_edges) {
@@ -140,10 +131,9 @@ const start = async (daoName, sourceUrl, sourceQuery) => {
       const ceramicFormatVotes = convertTheGraphProposalToCeramicVotes(thegraphProposal, ceramic_id)
       console.log('ceramic format votes: \n\n%s\n\n', JSON.stringify(ceramicFormatVotes))
 
-      // Check if vote_id already exists, then dont create this
-
+      // Write proposal votes into ceramic
       for (const ceramicFormatVote of ceramicFormatVotes) {
-        // TODO: Check this one isn't already written. may need upsert?
+        // Check this one isn't already written
 
         if (!ARGS_DRY_RUN && !existing_ceramic_vote_ids.includes(ceramicFormatVote['vote_id'])) {
 
